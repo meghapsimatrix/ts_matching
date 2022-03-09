@@ -35,7 +35,6 @@ generate_data <- function(k, # schools
   
   r_k <- rnorm(k, 0, icc3)
   u_jk <- rnorm(k * j, 0, icc2)
-  e_ijk <- rnorm(N, 1)
 
   # data --------------------------------------------------------------------
   total_teachers <- k * j
@@ -54,8 +53,7 @@ generate_data <- function(k, # schools
   # error terms
   dat$r_k <- r_k[dat$school_id]
   dat$u_jk <- u_jk[dat$teacher_id]
-  dat$e_ijk <- e_ijk
-  
+
   # map(dat, ~ sum(is.na(.))) # check na 
 
   # design matrix -----------------------------------------------------------
@@ -141,3 +139,6 @@ example_dat <- generate_data(k = k,
                              delta = delta)
 
 map(example_dat, ~ sum(is.na(.)))
+
+# proportion of teachers in treatment group off a bit
+table(example_dat$D)
