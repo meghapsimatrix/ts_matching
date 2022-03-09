@@ -86,8 +86,6 @@ generate_data <- function(k, # schools
     select(intercept, X_ijk, U_ijk, W_jk, Z_k, r_k, u_jk) %>%
     as.matrix()
     
-  
-  # this is resulting in some NA's for some reason hmm
   Y_0_ijk <- rnorm(n = N,
                    mean = X_outcome %*% outcome_coef,
                    sd = sqrt(1 - icc2 - icc3))
