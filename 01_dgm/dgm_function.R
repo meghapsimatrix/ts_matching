@@ -25,7 +25,7 @@ generate_data <- function(k, # schools
   # questions - should we do multivariate normal - 
   # the covariates aren't correlated with each other right now
   
-  Z_k <-rnorm(k)  # mean 0 sd 1 by default
+  Z_k <- rnorm(k)  # mean 0 sd 1 by default
   W_jk <- rnorm(k * j)
   X_ijk <- rnorm(N)
   
