@@ -6,21 +6,40 @@ library(metafor)
 
 set.seed(20220224)
 
-i <- 100000
-j <- 1000
-k <- 300
+
+# Sample size -------------------------------------------------------------
+
+k <- 300 #schools
+j <- 1000 # teachers 
+i <- 100000 # students
 
 
-N <- i * j * k
 
-tau <- 0.1
-omega <- 0.2
+N <- i * j * k # total number of obs
+
+
+
+# ICC ---------------------------------------------------------------------
+
+icc3 <- 0.1  # icc for school 
+icc2 <- 0.2 # icc for teachers
+icc1 <- 1
+
+
+# covariates --------------------------------------------------------------
+
+Z_k <-rnorm(k)  # mean 0 sd 1 by default
+W_jk <- rnorm(k *j)
+
+
+
+
 
 beta_0 <- 0.3
 
-
-v_ij <- rnorm(k * j, 0, tau)
-u_j <- rnorm(k, 0, omega)
+e_ij <- rnorm(N, 1)
+v_ij <- rnorm(k * j, 0, icc2)
+u_j <- rnorm(k, 0, icc3)
 
 dat <- data.frame(student_id = 1:N,
                   teacher_id = rep(rep(1:j, times = k), each = i),
