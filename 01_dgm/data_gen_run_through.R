@@ -9,9 +9,9 @@ set.seed(20220224)
 
 # Sample size -------------------------------------------------------------
 
-k <- 300 #schools
-j <- 1000 # teachers 
-i <- 100000 # students
+k <- 30 #schools
+j <- 6 # teachers 
+i <- 20 # students
 
 
 
@@ -30,6 +30,15 @@ icc1 <- 1
 
 Z_k <-rnorm(k)  # mean 0 sd 1 by default
 W_jk <- rnorm(k *j)
+X_ijk <- rnorm(N)
+
+U_ijk <- rnorm(N)   # unobserved student-level covariate
+
+# Residuals ---------------------------------------------------------------
+
+u_j <- rnorm(k, 0, icc3)
+v_ij <- rnorm(k * j, 0, icc2)
+e_ij <- rnorm(N, 1)
 
 
 
@@ -37,9 +46,7 @@ W_jk <- rnorm(k *j)
 
 beta_0 <- 0.3
 
-e_ij <- rnorm(N, 1)
-v_ij <- rnorm(k * j, 0, icc2)
-u_j <- rnorm(k, 0, icc3)
+
 
 dat <- data.frame(student_id = 1:N,
                   teacher_id = rep(rep(1:j, times = k), each = i),
