@@ -110,9 +110,10 @@ generate_data <- function(k, # schools
 
 # run function ------------------------------------------------------------
 
-k <- 10 #schools
-j <- 6 # teachers 
-i <- 20 # students
+# memory exhaustion if I try to make all of these large 
+k <- 100000 #schools
+j <-100  # teachers 
+i <- 10 # students
 
 icc3 <- 0.05  # icc for school 
 icc2 <- 0.20 # icc for teachers
@@ -136,7 +137,57 @@ example_dat <- generate_data(k = k,
                              outcome_coef = outcome_coef, 
                              delta = delta)
 
+# check if any is missing 
 map(example_dat, ~ sum(is.na(.)))
 
 # proportion of teachers in treatment group off a bit
-table(example_dat$D)
+# proportion still off
+prop.table(table(example_dat$D))
+
+
+
+# check covs --------------------------------------------------------------
+
+# school level 
+
+school_cov_dat <- 
+  example_dat %>%
+  select(school_id, Z_k) %>%
+  distinct(.)
+
+ggplot(school_cov_dat, aes(x = Z_k)) +
+  geom_density() + 
+  theme_minimal()
+
+mean(school_cov_dat$Z_k)
+sd(school_cov_dat$Z_k)
+
+# teacher level 
+
+teacher_cov_dat <- 
+  example_dat %>%
+  select(teacher_id, W_jk) %>%
+  distinct(.)
+
+ggplot(teacher_cov_dat, aes(x = W_jk)) +
+  geom_density() + 
+  theme_minimal()
+
+mean(teacher_cov_dat$W_jk)
+sd(teacher_cov_dat$W_jk)
+
+# student level 
+
+ggplot(example_dat, aes(x = X_ijk)) +
+  geom_density() + 
+  theme_minimal()
+
+mean(example_dat$X_ijk)
+sd(example_dat$X_ijk)
+
+ggplot(example_dat, aes(x = U_ijk)) +
+  geom_density() + 
+  theme_minimal()
+
+mean(example_dat$U_ijk)
+sd(example_dat$U_ijk)
