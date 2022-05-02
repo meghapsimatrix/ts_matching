@@ -75,6 +75,7 @@ generate_data <- function(k, # schools
   
   pr <- 1/ (1 + exp(-(X_ps %*% ps_coef)))  
   D <- ifelse(pr > pr_star, 1, 0) 
+  #D <- rbinom(k * j, 1, pr)
   
   dat$D <- D[dat$teacher_id]
   
@@ -111,8 +112,9 @@ generate_data <- function(k, # schools
 # run function ------------------------------------------------------------
 
 # memory exhaustion if I try to make all of these large 
-k <- 100000 #schools
-j <-100  # teachers 
+# for checking the distributions - need to increased the numbers here
+k <- 100 #schools
+j <-20  # teachers 
 i <- 10 # students
 
 icc3 <- 0.05  # icc for school 
@@ -136,6 +138,8 @@ example_dat <- generate_data(k = k,
                              pr_star = pr_star, 
                              outcome_coef = outcome_coef, 
                              delta = delta)
+
+save(example_dat, file = "data/example_data.RData")
 
 # check if any is missing 
 map(example_dat, ~ sum(is.na(.)))
@@ -191,3 +195,4 @@ ggplot(example_dat, aes(x = U_ijk)) +
 
 mean(example_dat$U_ijk)
 sd(example_dat$U_ijk)
+
