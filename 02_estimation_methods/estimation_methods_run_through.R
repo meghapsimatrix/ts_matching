@@ -3,15 +3,22 @@ library(MatchIt)
 library(lme4)
 library(cobalt)
 library(broom)
+library(matchMulti)
+
+# https://cran.r-project.org/web/packages/matchMulti/matchMulti.pdf
+
+
+# load data ---------------------------------------------------------------
 
 load("data/example_data.RData")
 
 glimpse(example_dat)
 
 
-# Cluster level data ------------------------------------------------------
+# create cluster level data - cluster and site covariates
 
-cluster_level <- 
+
+cluster_level_dat <- 
   example_dat %>%
   group_by(teacher_id) %>%
   summarize(school_id = mean(school_id),
@@ -22,14 +29,46 @@ cluster_level <-
   ungroup()
 
 
+# quintiles based on site-level scores
+
+quint <- with(example_dat, quantile(Z_k, seq(0, 1, 0.2)))
+
+example_dat$quintile <- cut(example_dat$Z_k, quint,
+                            labels = c("A","B","C","D","E"),
+                            include.lowest = TRUE)
+
+
+glimpse(example_dat)
+
+
+# Estimate propensity scores ----------------------------------------------
+
+# random intercept only?
+# what do we do with these propensity scores?
+
+# unit level 
+unit_ps_model <- glmer(D ~ X_ijk + W_jk + Z_k + (1 | teacher_id) + (1 | school_id),
+                       family = "binomial", 
+                       data = example_dat)
+
+example_dat$ps_unit <- predict(unit_ps_model, type = "response")
+
+
+# cluster level 
+cluster_ps_model <- glmer(D ~  W_jk + Z_k + (1 | school_id),
+                         family = "binomial",
+                         data = cluster_level_dat)
+
+cluster_level_dat$ps_cluster <- predict(cluster_ps_model, type = "response")
+
+
 
 # Method 1 ----------------------------------------------------------------
 
 # no distinction units only 
-
 # by default nearest neighbor, no replacement
 
-# just with matchit
+# just with matchit (not multi-level)
 m_out_1 <- matchit(D ~ X_ijk + W_jk + Z_k,
                    caliper = .25,
                    data = example_dat)
@@ -47,3 +86,6 @@ out_mod_1 <- lmer(Y_ijk ~ D  + X_ijk + W_jk + Z_k + (1 | teacher_id) + (1 | scho
                   data = m_data_1)
 
 summary(out_mod_1)
+
+
+
