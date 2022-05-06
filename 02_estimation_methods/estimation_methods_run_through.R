@@ -4,6 +4,7 @@ library(lme4)
 library(cobalt)
 library(broom)
 library(matchMulti)
+library(nlme)
 
 # https://cran.r-project.org/web/packages/matchMulti/matchMulti.pdf
 
@@ -102,3 +103,11 @@ match_simple <- matchMulti(example_dat,
 
 #str(match_simple)
 
+match_data <- as.data.frame(match_simple$matched)
+head(match_data)
+
+mod <- lme(Y_ijk ~ D, 
+           random = ~ 1 | pair.id/ school_id,
+           data = match_data)
+
+summary(mod)
