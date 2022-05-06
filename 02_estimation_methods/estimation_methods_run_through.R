@@ -90,6 +90,9 @@ summary(out_mod_1)
 
 
 
+# do I use the ps estimated using glmer to match?
+
+
 # matchMulti --------------------------------------------------------------
 
 match_simple <- matchMulti(example_dat, 
