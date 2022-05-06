@@ -89,3 +89,16 @@ summary(out_mod_1)
 
 
 
+# matchMulti --------------------------------------------------------------
+
+match_simple <- matchMulti(example_dat, 
+                           treatment = "D",
+                           school.id = "teacher_id",
+                           match.students = FALSE,
+                           student.vars = "X_ijk",
+                           verbose = TRUE)
+
+# two level - level 2 is teachers where the treatment is 
+
+#str(match_simple)
+
