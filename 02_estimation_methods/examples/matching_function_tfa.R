@@ -203,7 +203,8 @@ fun.match <- function(dat,
     
     t.m1 <- t.m1[ ,c(TeacherID,exact.vars,"PSW3W")]
     
-    t.x <- t; t.x$PSW3W <- NA # placeholder for schools with no within-school matches
+    t.x <- t
+    t.x$PSW3W <- NA # placeholder for schools with no within-school matches
     
     t2 <- tryCatch(merge(t, t.m1, by=c(TeacherID,exact.vars), 
                          all.x = TRUE),
@@ -225,8 +226,11 @@ fun.match <- function(dat,
       }
       
       newfmla <- paste(pspar.j[,"(Intercept)"],tfmla,"+",pspar.j[,"U0"])
+      
     }else{
+      
       tfmla <- NULL
+      
       for(i in teacher.vars){
         tfmla.i <- paste0(pspar.j[,i],"*c2$",i)
         tfmla <- paste(tfmla,tfmla.i,sep=" + ")
