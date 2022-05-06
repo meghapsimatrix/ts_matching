@@ -1,15 +1,35 @@
 # Matching Function #
-fun.match <- function(dat, SiteID, TeacherID, tx.var, exact.vars, teacher.vars, site.vars=NULL, score, crc, replacement,ratio=1,seed=1234){
+fun.match <- function(dat, 
+                      SiteID, 
+                      TeacherID, 
+                      tx.var, 
+                      exact.vars, 
+                      teacher.vars, 
+                      site.vars = NULL, 
+                      score, # what is this?
+                      crc, # caliper
+                      replacement, # with or without replacement
+                      ratio = 1,
+                      seed = 1234){
+  
   set.seed(seed)
+  
   if(is.null(site.vars)){
-    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, teacher.vars, score)])
-  }else{
-    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, teacher.vars, site.vars)])
+    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, 
+                               exact.vars, teacher.vars, score)])
+  
+    } else{
+      
+    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, 
+                               teacher.vars, site.vars)]) # why is score not here?
+    
   }
   
   if(length(unique(dat[,SiteID]))<12){
+    
     df$site_cluster <- 1
-  }else if(length(unique(dat[,SiteID]))>=12 & length(unique(dat[,SiteID]))<20){
+    
+  } else if(length(unique(dat[,SiteID]))>=12 & length(unique(dat[,SiteID]))<20){
     cluster_q <- quantile(df[,score], probs = seq(0, 1, 1/3))
     df$site_cluster <- ifelse(df[,score] <= cluster_q[2], 1,
                               ifelse(df[,score] > cluster_q[2] & df[,score] <= cluster_q[3],2,
@@ -45,6 +65,12 @@ fun.match <- function(dat, SiteID, TeacherID, tx.var, exact.vars, teacher.vars, 
   #cluster_scores[,'site_cluster'] <- scclust::sc_clustering(distances::distances(cluster_scores$score),2)
   #df <- dplyr::left_join(df,cluster_scores[,c('schoolid','site_cluster')],by=c('schoolid'))
   
+  
+  
+  # multilevel formula for ps modeling 
+  # treatment ~ teacher level variables and site level variables 
+  # random intercept by site
+  
   if(is.null(site.vars)){
     pfmla <- as.formula(paste(tx.var," ~ 1 + ",paste(teacher.vars,collapse="+")," + (1|",SiteID,")"))
   }else{
@@ -54,6 +80,10 @@ fun.match <- function(dat, SiteID, TeacherID, tx.var, exact.vars, teacher.vars, 
   }
   #pfmla <- as.formula(paste0(c(tx.var,"~1",teacher.vars,site.vars,paste("(1|",SiteID,")")),collapse='+'))
   #p3 <- glmer(pfmla, data=df, family=binomial(link="logit"),control=glmerControl(optimizer='bobyqa',optCtrl = list(maxfun = 2e4)))
+  
+  # use bayesian glmer
+  # and p3 - take out propensity scores and add it to the data
+  
   p3 <- rstanarm::stan_glmer(pfmla, data=df, family=binomial(link="logit"))
   df$p3 <- log(fitted(p3)/(1-fitted(p3)))
   #df$p3 <- colMeans(rstanarm::posterior_linpred(p3))
@@ -64,6 +94,9 @@ fun.match <- function(dat, SiteID, TeacherID, tx.var, exact.vars, teacher.vars, 
   #pspar3a$U0 <- pull(ranef(p3)[[SiteID]])
   #pspar3a$`(Intercept)` <- pspar3a$`(Intercept)`-pspar3a$U0
   #pspar3a[,SiteID] <- rownames(ranef(p3)[[SiteID]])
+  
+  
+  # NOT SURE WHAT THE FOLLOWING IS DOING
   
   #psrx <- ranef(p3)[SiteID]
   psrx <- broom.mixed::tidy(p3,effects='ran_vals')$estimate
@@ -86,46 +119,98 @@ fun.match <- function(dat, SiteID, TeacherID, tx.var, exact.vars, teacher.vars, 
   m.data3 <- NULL # create placeholder for matched data
   
   # set treatment schools #
+  # site id - that are treatment 
+  # unique and sorted
+  
   sids <- sort(unique(df[df[,tx.var]==1,SiteID]))
+  
+  # list glm output is the ps p3
+  # data used 
   
   output <- list()
   output[['glm output']] <- p3
   output[['data']] <- df
+  
+  
   # loop over treatment schools #
+  
+  # for each of the treatment schools
+  
   for(j in 1:length(sids)) {
     #j <-4
     # set data #
-    sid <- sids[j]
+    sid <- sids[j] # school id 
     t <- df[df[,SiteID]==sid & df[,tx.var]==1,] # use treatment units in school j
     c1 <- df[df[,SiteID]==sid & df[,tx.var]==0,] # use control units in school j
-    if(any(df[,SiteID]!=sid & df$site_cluster %in% t$site_cluster & df[,tx.var]==0)) {
-      c2 <- df[df[,SiteID]!=sid & df$site_cluster %in% t$site_cluster & df[,tx.var]==0,]
-    }else{
-      c2 <- df[df[,SiteID]!=sid & df$site_cluster %in% t$site_cluster,][1,]
+    
+    
+    if(any(df[,SiteID]!=sid & 
+           df$site_cluster %in% t$site_cluster &
+           df[,tx.var] == 0)) {
+      
+      c2 <- df[df[, SiteID]!=sid & 
+                 df$site_cluster %in% t$site_cluster & 
+                 df[,tx.var]==0,]
+   
+    }
+    
+    else{
+      
+      c2 <- df[df[,SiteID]!=sid & 
+                 df$site_cluster %in% t$site_cluster,][1,]
+      
       c2[,2:dim(df)[2]] <- NA
+      
     }		
-    tmp1 <- rbind(t,c1)
+    
+    tmp1 <- rbind(t, c1)  # treatment and control data? 
     
     pspar.j <- as.vector(psparx[psparx[,SiteID]==j,]) # use ps model parameter estimates for school j
     
     # match 1: within-school #
-    m.out1 <- tryCatch(matchit(tmp1[,tx.var] ~ tmp1$pscore, data = tmp1, method = "nearest", replace = replacement, exact = exact.vars, caliper=crc, distance=tmp1$pscore,ratio=ratio),error=function(e)NULL)
+    m.out1 <- tryCatch(matchit(tmp1[,tx.var] ~ tmp1$pscore, # treatment ~ pscore
+                               data = tmp1, 
+                               method = "nearest", 
+                               replace = replacement, 
+                               exact = exact.vars, 
+                               caliper = crc, 
+                               distance = tmp1$pscore,
+                               ratio = ratio),
+                          error=function(e)NULL)
+    
     output[['Within School Matches']][[j]] <- m.out1
     
     # create data frame of matched units from match 1 # 
-    m.data3w <- tryCatch(match.data(m.out1, weights="PSW3W", distance="PS3W"),error=function(e)NULL)
+    m.data3w <- tryCatch(match.data(m.out1, 
+                                    weights = "PSW3W", 
+                                    distance = "PS3W"),
+                         error=function(e)NULL)
     
     # save within-site matches for later analysis #
-    m.data2.j <- tryCatch(match.data(m.out1, weights="PSW2", distance="PS2"),error=function(e)NULL)
+    m.data2.j <- tryCatch(match.data(m.out1, 
+                                     weights = "PSW2", 
+                                     distance = "PS2"),
+                          error=function(e)NULL)
+    
     m.data2 <- rbind(m.data2,m.data2.j)
     
     # select unmatched treatment units in school j #
-    t.m1 <- tryCatch(match.data(m.out1, weights="PSW3W", distance="PS3W", group="treat"),error=function(e)NULL)
+    t.m1 <- tryCatch(match.data(m.out1, 
+                                weights="PSW3W", 
+                                distance="PS3W", 
+                                group="treat"),
+                     error=function(e)NULL)
+    
     t.m1 <- t.m1[ ,c(TeacherID,exact.vars,"PSW3W")]
+    
     t.x <- t; t.x$PSW3W <- NA # placeholder for schools with no within-school matches
-    t2 <- tryCatch(merge(t, t.m1, by=c(TeacherID,exact.vars), all.x=TRUE),error=function(e)t.x)
+    
+    t2 <- tryCatch(merge(t, t.m1, by=c(TeacherID,exact.vars), 
+                         all.x = TRUE),
+                   error=function(e)t.x)
+    
     t2$PSW3W <- ifelse(is.na(t2$PSW3W),0,1)
-    t2 <- t2[t2$PSW3W==0,]
+    t2 <- t2[t2$PSW3W == 0,]
     t2$pscore.j <- t2$pscore
     
     # set data for between-school match #
@@ -162,7 +247,15 @@ fun.match <- function(dat, SiteID, TeacherID, tx.var, exact.vars, teacher.vars, 
     tmp2 <- rbind(t2,c2)
     
     # match 2: between-school: only if control units fall within treatment unit range #
-    m.out2 <- tryCatch(matchit(tmp2[,tx.var] ~ tmp2$pscore.j, data = tmp2, method = "nearest", replace = replacement, exact = exact.vars, caliper=crc, distance=tmp2$pscore.j,ratio=ratio),error=function(e)NULL)
+    m.out2 <- tryCatch(matchit(tmp2[,tx.var] ~ tmp2$pscore.j, 
+                               data = tmp2, 
+                               method = "nearest", 
+                               replace = replacement,
+                               exact = exact.vars, 
+                               caliper=crc, 
+                               distance=tmp2$pscore.j,
+                               ratio=ratio),
+                       error=function(e)NULL)
     output[['Bewteen School Matches']][[j]] <- m.out2
     
     # create data frame of matched units from match 2 #
