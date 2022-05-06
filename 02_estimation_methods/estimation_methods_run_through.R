@@ -31,7 +31,7 @@ cluster_level_dat <-
 
 
 # quintiles based on site-level scores
-
+# what should we do with these?
 quint <- with(example_dat, quantile(Z_k, seq(0, 1, 0.2)))
 
 example_dat$quintile <- cut(example_dat$Z_k, quint,
