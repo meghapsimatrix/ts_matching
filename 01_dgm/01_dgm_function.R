@@ -8,14 +8,14 @@ library(tidyverse)
 
 generate_data <- function(k, # schools
                           j, # teachers
-                          i, # students
+                          i = 10, # students some default value
                           icc3, #school level icc
                           icc2, # teacher level icc
-                          R2, # r-sq
-                          ps_coef, # coefficients for ps model
-                          pr_star, # overall proportion of teachers in trt group
-                          outcome_coef, # coefficients for outcome model 
-                          delta # treatment effect
+                          R2 = 0.40, # r-sq
+                          ps_coef, # coefficients for ps model add default
+                          pr_star, # overall proportion of teachers in trt group add default
+                          outcome_coef, # coefficients for outcome model  add default
+                          delta # treatment effect add default here
                           ){ 
 
   

@@ -1,0 +1,71 @@
+library(dplyr)
+library(purrr)
+library(mvtnorm)
+library(tidyr)
+library(stringr)
+library(tibble)
+
+
+#-----------------------------------------------------------
+# Simulation Driver - should return a data.frame or tibble
+#-----------------------------------------------------------
+
+# need to fill this in 
+
+run_sim <- function(iterations, model_params, design_params, seed = NULL) {
+  if (!is.null(seed)) set.seed(seed)
+  
+  results <-
+    rerun(iterations, {
+      dat <- generate_dat(model_params)
+      estimate(dat, design_params)
+    }) %>%
+    bind_rows()
+  
+  calc_performance(results, model_params)
+}
+
+#-------------------------------------
+# Experimental Design
+#-------------------------------------
+
+# include design matrix, exclude to_test
+
+set.seed(20220510) # change this seed value!
+
+# now express the simulation parameters as vectors/lists
+
+design_factors <- list(
+  k = c(20, 50), # schools
+  j = c(4, 8), # teachers
+  icc3 = c(0.10, 0.20), #icc school level
+  icc2 = c(0.10, 0.20) #icc teacher level
+)
+
+# combine into a design set
+params <-
+  cross_df(design_factors) %>%
+  mutate(
+    iterations = 2400, # change this to how many ever iterations
+    seed = round(runif(1) * 2^30) + 1:n()
+  )
+
+
+#--------------------------------------------------------
+# run simulations in parallel - future + furrr workflow
+#--------------------------------------------------------
+
+library(future)
+library(furrr)
+
+plan(multisession) # choose an appropriate plan from the future package
+evaluate_by_row(params, run_sim)
+
+# OR
+plan(multisession)
+system.time(
+  results <-
+    params %>%
+    mutate(res = future_pmap(., .f = run_sim)) %>%
+    unnest(cols = res)
+)
