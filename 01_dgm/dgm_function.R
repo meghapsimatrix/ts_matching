@@ -11,6 +11,7 @@ generate_data <- function(k, # schools
                           i, # students
                           icc3, #school level icc
                           icc2, # teacher level icc
+                          R2, # r-sq
                           ps_coef, # coefficients for ps model
                           pr_star, # overall proportion of teachers in trt group
                           outcome_coef, # coefficients for outcome model 
@@ -89,7 +90,7 @@ generate_data <- function(k, # schools
     
   Y_0_ijk <- rnorm(n = N,
                    mean = X_outcome %*% outcome_coef,
-                   sd = sqrt(1 - icc2 - icc3))
+                   sd = sqrt(1 - icc2 - icc3 - R2))
   
   Y_1_ijk <- Y_0_ijk + delta
   
@@ -119,6 +120,7 @@ i <- 10 # students
 
 icc3 <- 0.05  # icc for school 
 icc2 <- 0.20 # icc for teachers
+R2 <- .40
 
 
 ps_coef <- matrix(c(1.2, 0.8, -0.25, 0.6, -0.4, 1, 1))  #what values for pi 6 and 7 in the notes?
@@ -134,6 +136,7 @@ example_dat <- generate_data(k = k,
                              i = i, 
                              icc3 = icc3, 
                              icc2 = icc2, 
+                             R2 = R2,
                              ps_coef = ps_coef, 
                              pr_star = pr_star, 
                              outcome_coef = outcome_coef, 
