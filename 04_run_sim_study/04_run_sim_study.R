@@ -79,3 +79,13 @@ system.time(
     mutate(res = future_pmap(., .f = run_sim)) %>%
     unnest(cols = res)
 )
+
+
+#--------------------------------------------------------
+# Save results and details
+#--------------------------------------------------------
+
+session_info <- sessionInfo()
+run_date <- date()
+
+save(params, results, session_info, run_date, file = "simulation_results.Rdata")
