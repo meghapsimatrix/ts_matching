@@ -8,6 +8,15 @@ library(simhelpers)
 
 
 #-----------------------------------------------------------
+# Source the functions
+#-----------------------------------------------------------
+
+source("01_dgm/01_dgm_function.R")
+# source("02_estimation_methods/02_estimation_functions.R") need to create this
+source("03_performance_criteria/03_calc_performance.R")
+
+
+#-----------------------------------------------------------
 # Simulation Driver - should return a data.frame or tibble
 #-----------------------------------------------------------
 
