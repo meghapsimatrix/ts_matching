@@ -123,7 +123,7 @@ icc2 <- 0.20 # icc for teachers
 R2 <- .40
 
 
-ps_coef <- matrix(c(1.2, 0.8, -0.25, 0.6, -0.4, 1, 1))  #what values for pi 6 and 7 in the notes?
+ps_coef <- matrix(c(.2, 0.8, -0.25, 0.6, -0.4, 1, 1))  #what values for pi 6 and 7 in the notes?
 pr_star <- .5
 
 outcome_coef <- matrix(c(1, 0.3, .5, .4, -0.2, 1, 1))
