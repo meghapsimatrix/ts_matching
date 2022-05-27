@@ -166,18 +166,37 @@ delta
 
 ### ICC 
 
+Calculating ICC from performance package:
+
 ```{r}
 performance::icc(out_mod)
 ```
 
-This seems similar to icc3 used to generate data.
+Breaking it down by group. ICC for teacher id x school id?
 
 ```{r}
-icc3
+performance::icc(out_mod, by_group = TRUE)
 ```
 
+The icc's used in the dgm:
 
-For three level model, do you know of a package that calculates icc for the teacher level?
+```{r}
+icc3 # school level 
+icc2 # teacher level 
+```
+
+These match the iccs.
+
+This is the sd of the residual at school level:
+
+```{r}
+sd(example_dat$r_k)
+```
+
+This is the sd of the residual at teacher level:
 
 
+```{r}
+sd(example_dat$u_jk)
+```
 

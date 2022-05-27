@@ -488,15 +488,32 @@ ggplot(teacher_cov_dat, aes(x = W_jk)) +
 </div>
 <div id="icc" class="section level3" number="4.4.2">
 <h3 number="4.4.2"><span class="header-section-number">4.4.2</span> ICC</h3>
+<p>Calculating ICC from performance package:</p>
 <pre class="r"><code>performance::icc(out_mod)</code></pre>
 <pre><code>## # Intraclass Correlation Coefficient
 ## 
 ##      Adjusted ICC: 0.066
 ##   Conditional ICC: 0.051</code></pre>
-<p>This seems similar to icc3 used to generate data.</p>
-<pre class="r"><code>icc3</code></pre>
+<p>Breaking it down by group. ICC for teacher id x school id?</p>
+<pre class="r"><code>performance::icc(out_mod, by_group = TRUE)</code></pre>
+<pre><code>## # ICC by Group
+## 
+## Group                |   ICC
+## ----------------------------
+## teacher_id:school_id | 0.062
+## school_id            | 0.004</code></pre>
+<p>The icc’s used in the dgm:</p>
+<pre class="r"><code>icc3 # school level </code></pre>
 <pre><code>## [1] 0.05</code></pre>
-<p>For three level model, do you know of a package that calculates icc for the teacher level?</p>
+<pre class="r"><code>icc2 # teacher level </code></pre>
+<pre><code>## [1] 0.2</code></pre>
+<p>These match the iccs.</p>
+<p>This is the sd of the residual at school level:</p>
+<pre class="r"><code>sd(example_dat$r_k)</code></pre>
+<pre><code>## [1] 0.0498064</code></pre>
+<p>This is the sd of the residual at teacher level:</p>
+<pre class="r"><code>sd(example_dat$u_jk)</code></pre>
+<pre><code>## [1] 0.1998938</code></pre>
 </div>
 </div>
 </div>
