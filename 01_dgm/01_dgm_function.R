@@ -34,8 +34,8 @@ generate_data <- function(k, # schools
   
   # Residuals ---------------------------------------------------------------
   
-  r_k <- rnorm(k, 0, icc3)
-  u_jk <- rnorm(k * j, 0, icc2)
+  r_k <- rnorm(k, 0, sqrt(icc3))
+  u_jk <- rnorm(k * j, 0, sqrt(icc2))
 
   # data --------------------------------------------------------------------
   total_teachers <- k * j

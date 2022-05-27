@@ -190,13 +190,13 @@ These match the iccs.
 This is the sd of the residual at school level:
 
 ```{r}
-sd(example_dat$r_k)
+var(example_dat$r_k)
 ```
 
 This is the sd of the residual at teacher level:
 
 
 ```{r}
-sd(example_dat$u_jk)
+var(example_dat$u_jk)
 ```
 

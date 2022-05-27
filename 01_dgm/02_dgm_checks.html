@@ -263,8 +263,8 @@ generate_data</code></pre>
 ##     W_jk &lt;- rnorm(k * j)
 ##     X_ijk &lt;- rnorm(N)
 ##     U_ijk &lt;- rnorm(N)
-##     r_k &lt;- rnorm(k, 0, icc3)
-##     u_jk &lt;- rnorm(k * j, 0, icc2)
+##     r_k &lt;- rnorm(k, 0, sqrt(icc3))
+##     u_jk &lt;- rnorm(k * j, 0, sqrt(icc2))
 ##     total_teachers &lt;- k * j
 ##     dat &lt;- data.frame(student_id = 1:N, teacher_id = rep(1:total_teachers, 
 ##         each = i), school_id = rep(1:k, each = N/k))
@@ -370,8 +370,8 @@ map(example_dat, ~ sum(is.na(.)))</code></pre>
 # so not sure what pr_star is doing
 prop.table(table(example_dat$D))</code></pre>
 <pre><code>## 
-##       0       1 
-## 0.46895 0.53105</code></pre>
+##      0      1 
+## 0.4755 0.5245</code></pre>
 </div>
 <div id="distributions" class="section level2" number="4.3">
 <h2 number="4.3"><span class="header-section-number">4.3</span> Distributions</h2>
@@ -433,43 +433,40 @@ ggplot(teacher_cov_dat, aes(x = W_jk)) +
 <h3 number="4.4.1"><span class="header-section-number">4.4.1</span> Coefficients</h3>
 <pre class="r"><code>out_mod &lt;- lmer(Y_ijk ~ D  + X_ijk + W_jk + Z_k + 
                     (1 | school_id/teacher_id),
-                  data = example_dat)</code></pre>
-<pre><code>## Warning in checkConv(attr(opt, &quot;derivs&quot;), opt$par, ctrl = control$checkConv, :
-## Model failed to converge with max|grad| = 0.00840127 (tol = 0.002, component 1)</code></pre>
-<pre class="r"><code>summary(out_mod)</code></pre>
+                  data = example_dat)
+
+summary(out_mod)</code></pre>
 <pre><code>## Linear mixed model fit by REML [&#39;lmerMod&#39;]
 ## Formula: Y_ijk ~ D + X_ijk + W_jk + Z_k + (1 | school_id/teacher_id)
 ##    Data: example_dat
 ## 
-## REML criterion at convergence: 476911.3
+## REML criterion at convergence: 493168.1
 ## 
 ## Scaled residuals: 
 ##     Min      1Q  Median      3Q     Max 
-## -4.3599 -0.6626  0.0003  0.6600  4.2199 
+## -4.2770 -0.6498 -0.0003  0.6501  4.1222 
 ## 
 ## Random effects:
 ##  Groups               Name        Variance Std.Dev.
-##  teacher_id:school_id (Intercept) 0.039706 0.19926 
-##  school_id            (Intercept) 0.002604 0.05103 
-##  Residual                         0.602755 0.77637 
+##  teacher_id:school_id (Intercept) 0.15520  0.3940  
+##  school_id            (Intercept) 0.02933  0.1713  
+##  Residual                         0.60278  0.7764  
 ## Number of obs: 200000, groups:  teacher_id:school_id, 20000; school_id, 1000
 ## 
 ## Fixed effects:
 ##              Estimate Std. Error t value
-## (Intercept)  0.937454   0.004467  209.88
-## D           -0.281500   0.006584  -42.75
-## X_ijk        0.295165   0.001783  165.59
-## W_jk         0.365599   0.002991  122.22
-## Z_k         -0.175445   0.003065  -57.25
+## (Intercept)  0.675940   0.007842   86.19
+## D            0.205686   0.008775   23.44
+## X_ijk        0.291662   0.001808  161.29
+## W_jk         0.245507   0.004024   61.01
+## Z_k         -0.100121   0.006518  -15.36
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr) D      X_ijk  W_jk  
-## D     -0.787                     
-## X_ijk  0.072 -0.094              
-## W_jk   0.514 -0.658  0.062       
-## Z_k   -0.358  0.436 -0.043 -0.291
-## optimizer (nloptwrap) convergence code: 0 (OK)
-## Model failed to converge with max|grad| = 0.00840127 (tol = 0.002, component 1)</code></pre>
+## D     -0.589                     
+## X_ijk  0.030 -0.052              
+## W_jk   0.326 -0.558  0.029       
+## Z_k   -0.161  0.237 -0.013 -0.135</code></pre>
 <p>Compare to the coefficients used in data gen:</p>
 <pre class="r"><code>tibble(vars = c(&quot;intercept&quot;, &quot;X_ijk&quot;, &quot;U_ijk&quot;, &#39;W_jk&#39;, &quot;Z_k&quot;, &quot;r_k&quot;, &quot;u_jk&quot;),
          params = as.vector(outcome_coef))</code></pre>
@@ -492,16 +489,16 @@ ggplot(teacher_cov_dat, aes(x = W_jk)) +
 <pre class="r"><code>performance::icc(out_mod)</code></pre>
 <pre><code>## # Intraclass Correlation Coefficient
 ## 
-##      Adjusted ICC: 0.066
-##   Conditional ICC: 0.051</code></pre>
+##      Adjusted ICC: 0.234
+##   Conditional ICC: 0.186</code></pre>
 <p>Breaking it down by group. ICC for teacher id x school id?</p>
 <pre class="r"><code>performance::icc(out_mod, by_group = TRUE)</code></pre>
 <pre><code>## # ICC by Group
 ## 
 ## Group                |   ICC
 ## ----------------------------
-## teacher_id:school_id | 0.062
-## school_id            | 0.004</code></pre>
+## teacher_id:school_id | 0.197
+## school_id            | 0.037</code></pre>
 <p>The icc’s used in the dgm:</p>
 <pre class="r"><code>icc3 # school level </code></pre>
 <pre><code>## [1] 0.05</code></pre>
@@ -509,11 +506,11 @@ ggplot(teacher_cov_dat, aes(x = W_jk)) +
 <pre><code>## [1] 0.2</code></pre>
 <p>These match the iccs.</p>
 <p>This is the sd of the residual at school level:</p>
-<pre class="r"><code>sd(example_dat$r_k)</code></pre>
-<pre><code>## [1] 0.0498064</code></pre>
+<pre class="r"><code>var(example_dat$r_k)</code></pre>
+<pre><code>## [1] 0.04961354</code></pre>
 <p>This is the sd of the residual at teacher level:</p>
-<pre class="r"><code>sd(example_dat$u_jk)</code></pre>
-<pre><code>## [1] 0.1998938</code></pre>
+<pre class="r"><code>var(example_dat$u_jk)</code></pre>
+<pre><code>## [1] 0.1997877</code></pre>
 </div>
 </div>
 </div>
