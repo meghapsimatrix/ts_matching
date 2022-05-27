@@ -166,13 +166,7 @@ delta
 
 ### ICC 
 
-Calculating ICC from performance package:
-
-```{r}
-performance::icc(out_mod)
-```
-
-Breaking it down by group. ICC for teacher id x school id?
+Breaking it down by group. 
 
 ```{r}
 performance::icc(out_mod, by_group = TRUE)
