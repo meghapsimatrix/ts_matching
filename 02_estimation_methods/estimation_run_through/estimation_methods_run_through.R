@@ -8,10 +8,38 @@ library(nlme)
 
 # https://cran.r-project.org/web/packages/matchMulti/matchMulti.pdf
 
-
 # load data ---------------------------------------------------------------
 
-load("data/example_data.RData")
+source("01_dgm/01_dgm_function.R")
+
+set.seed(20220602)
+
+k <- 100 #schools
+j <-20  # teachers 
+i <- 10 # students
+
+icc3 <- 0.05  # icc for school 
+icc2 <- 0.20 # icc for teachers
+R2 <- .40
+
+
+ps_coef <- matrix(c(.07, 0.8, -0.25, 0.6, -0.4, 1, 1))  #what values for pi 6 and 7 in the notes?
+pr_star <- .5
+
+outcome_coef <- matrix(c(1, 0.3, .5, .4, -0.2, 1, 1))
+
+delta <- -0.4
+
+example_dat <- generate_data(k = k,
+                             j = j, 
+                             i = i, 
+                             icc3 = icc3, 
+                             icc2 = icc2, 
+                             R2 = R2,
+                             ps_coef = ps_coef, 
+                             pr_star = pr_star, 
+                             outcome_coef = outcome_coef, 
+                             delta = delta)
 
 glimpse(example_dat)
 
@@ -48,69 +76,69 @@ glimpse(example_dat)
 # what do we do with these propensity scores?
 
 # unit level 
-unit_ps_model <- glmer(D ~ X_ijk + W_jk + Z_k + (1 | teacher_id) + (1 | school_id),
+# ps in logit 
+unit_ps_model <- glmer(D ~ X_ijk + W_jk + Z_k + 
+                         (1 | school_id / teacher_id),
                        family = "binomial", 
                        data = example_dat)
 
-example_dat$ps_unit <- predict(unit_ps_model, type = "response")
+example_dat$ps_unit <- predict(unit_ps_model, type = "link")
+example_dat$ps_unit_pr <- predict(unit_ps_model, type = "response")
 
+example_dat %>%
+  mutate(D = as.character(D)) %>%
+  ggplot(aes(x = ps_unit, fill = D)) +
+  geom_density(alpha = 0.5) + 
+  theme_minimal()
+
+
+# check the predicted probabilites
+check <- example_dat %>%
+  select(ends_with("id"), D, ps_unit_pr) %>%
+  mutate(ps_unit_pr = round(ps_unit_pr),
+         match = D == ps_unit_pr)
+
+table(check$match)
+# perfect predictions for unit level bc 
+# the dgm doesn't have unit level random error? for ps model
 
 # cluster level 
-cluster_ps_model <- glmer(D ~  W_jk + Z_k + (1 | school_id),
+cluster_ps_model <- glmer(D ~ W_jk + Z_k + 
+                            (1 | school_id),
                          family = "binomial",
                          data = cluster_level_dat)
 
-cluster_level_dat$ps_cluster <- predict(cluster_ps_model, type = "response")
+cluster_level_dat$ps_cluster <- predict(cluster_ps_model, type = "link")
 
 
+cluster_level_dat %>%
+  mutate(D = as.character(D)) %>%
+  ggplot(aes(x = ps_cluster, fill = D)) +
+  geom_density(alpha = 0.5) + 
+  theme_minimal()
 
 # Method 1 ----------------------------------------------------------------
 
-# no distinction units only 
-# by default nearest neighbor, no replacement
 
-# just with matchit (not multi-level)
-m_out_1 <- matchit(D ~ X_ijk + W_jk + Z_k,
+# the following isn't working ps_unit is almost perfect prediction
+# how do you do multilevel matchit ?
+m_out_1 <- matchit(D ~ ps_unit, # is this right?
                    caliper = .25,
                    data = example_dat)
 
-m_out_1$match.matrix
+# the following works match across all sites
+m_out_1 <- matchit(D ~ X_ijk + W_jk + Z_k, 
+                   caliper = .25,
+                   data = example_dat)
 
 
-balance_stats <- bal.tab(m_out_1)
-balance_stats$Balance
+treatment_sites <- 
+  example_dat %>%
+  filter(D == 1)
 
-m_data_1 <- match.data(m_out_1)
-table(m_data_1$weights)  # if we get to a point were we have to use weights - lmer won't work
+# i think all sites are treatment sites
+# within schools some teacher are trt and some control
+# so we need to mess with data generation so some schools don't have a lot of treatment units or control 
+sids <- sort(unique(treatment_sites$school_id))
+length(sids)
 
-out_mod_1 <- lmer(Y_ijk ~ D  + X_ijk + W_jk + Z_k + (1 | teacher_id) + (1 | school_id),
-                  data = m_data_1)
-
-summary(out_mod_1)
-
-
-
-# do I use the ps estimated using glmer to match?
-
-
-# matchMulti --------------------------------------------------------------
-
-match_simple <- matchMulti(example_dat, 
-                           treatment = "D",
-                           school.id = "teacher_id",
-                           match.students = FALSE,
-                           student.vars = "X_ijk",
-                           verbose = TRUE)
-
-# two level - level 2 is teachers where the treatment is 
-
-#str(match_simple)
-
-match_data <- as.data.frame(match_simple$matched)
-head(match_data)
-
-mod <- lme(Y_ijk ~ D, 
-           random = ~ 1 | pair.id/ school_id,
-           data = match_data)
-
-summary(mod)

@@ -83,7 +83,7 @@ generate_data <- function(k, # schools
 
  # potential outcomes ------------------------------------------------------
 
- X_outcome <- 
+  X_outcome <- 
     design_mat %>%
     select(intercept, X_ijk, U_ijk, W_jk, Z_k, r_k, u_jk) %>%
     as.matrix()
