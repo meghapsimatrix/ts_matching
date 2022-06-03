@@ -99,8 +99,7 @@ check <- example_dat %>%
          match = D == ps_unit_pr)
 
 table(check$match)
-# perfect predictions for unit level bc 
-# the dgm doesn't have unit level random error? for ps model
+# perfect predictions for unit level?
 
 # cluster level 
 cluster_ps_model <- glmer(D ~ W_jk + Z_k + 
