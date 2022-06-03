@@ -126,10 +126,10 @@ m_out_1 <- matchit(D ~ ps_unit, # is this right?
                    distance = example_dat$ps_unit,
                    data = example_dat)
 
-# the following works match across all sites
+# the following works 
 m_out_1 <- matchit(D ~ X_ijk + W_jk + Z_k, 
                    caliper = .25,
-                   distance = example_dat$ps_unit,
+                   #distance = example_dat$ps_unit,
                    data = example_dat)
 
 
