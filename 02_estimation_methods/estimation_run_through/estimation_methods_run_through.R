@@ -124,11 +124,21 @@ cluster_level_dat %>%
 # how do you do multilevel matchit ?
 m_out_1 <- matchit(D ~ ps_unit, # is this right?
                    caliper = .25,
+                   distance = example_dat$ps_unit,
                    data = example_dat)
 
 # the following works match across all sites
 m_out_1 <- matchit(D ~ X_ijk + W_jk + Z_k, 
                    caliper = .25,
+                   distance = example_dat$ps_unit,
+                   data = example_dat)
+
+
+# exact match on site & group
+
+m_out_2 <- matchit(D ~ X_ijk + W_jk + Z_k, 
+                   caliper = .25,
+                   exact = ~ school_id + quintile,
                    data = example_dat)
 
 
