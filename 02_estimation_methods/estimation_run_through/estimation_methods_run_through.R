@@ -78,7 +78,7 @@ glimpse(example_dat)
 # unit level 
 # ps in logit 
 unit_ps_model <- glmer(D ~ X_ijk + W_jk + Z_k + 
-                         (1 | school_id / teacher_id),
+                         (1 | school_id),
                        family = "binomial", 
                        data = example_dat)
 
@@ -126,11 +126,7 @@ m_out_1 <- matchit(D ~ ps_unit, # is this right?
                    distance = example_dat$ps_unit,
                    data = example_dat)
 
-# the following works 
-m_out_1 <- matchit(D ~ X_ijk + W_jk + Z_k, 
-                   caliper = .25,
-                   #distance = example_dat$ps_unit,
-                   data = example_dat)
+
 
 
 # exact match on site & group
@@ -138,6 +134,7 @@ m_out_1 <- matchit(D ~ X_ijk + W_jk + Z_k,
 m_out_2 <- matchit(D ~ X_ijk + W_jk + Z_k, 
                    caliper = .25,
                    exact = ~ school_id + quintile,
+                   distance = example_dat$ps_unit,
                    data = example_dat)
 
 
