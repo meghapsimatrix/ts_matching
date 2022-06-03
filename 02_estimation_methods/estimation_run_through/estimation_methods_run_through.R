@@ -72,11 +72,20 @@ glimpse(example_dat)
 
 # Estimate propensity scores ----------------------------------------------
 
-# random intercept only?
-# what do we do with these propensity scores?
+# do we do hlm for ps model or not?
 
-# unit level 
-# ps in logit 
+
+# unit --------------------------------------------------------------------
+
+# Not multilevel
+unit_ps_model_nm <- glm(D ~ X_ijk + W_jk + Z_k, 
+                         family = "binomial", 
+                         data = example_dat)
+
+example_dat$ps_unit_nm <- predict(unit_ps_model_nm, type = "link")
+
+
+# Multilevel 
 unit_ps_model <- glmer(D ~ X_ijk + W_jk + Z_k + 
                          (1 | school_id),
                        family = "binomial", 
@@ -85,6 +94,7 @@ unit_ps_model <- glmer(D ~ X_ijk + W_jk + Z_k +
 example_dat$ps_unit <- predict(unit_ps_model, type = "link")
 example_dat$ps_unit_pr <- predict(unit_ps_model, type = "response")
 
+# check common support
 example_dat %>%
   mutate(D = as.character(D)) %>%
   ggplot(aes(x = ps_unit, fill = D)) +
@@ -92,16 +102,18 @@ example_dat %>%
   theme_minimal()
 
 
-# check the predicted probabilites
-check <- example_dat %>%
-  select(ends_with("id"), D, ps_unit_pr) %>%
-  mutate(ps_unit_pr = round(ps_unit_pr),
-         match = D == ps_unit_pr)
 
-table(check$match)
-# perfect predictions for unit level?
+# cluster -----------------------------------------------------------------
 
-# cluster level 
+# not multilevel
+cluster_ps_model_nm <- glm(D ~ W_jk + Z_k,
+                          family = "binomial",
+                          data = cluster_level_dat)
+
+cluster_level_dat$ps_cluster_nm <- predict(cluster_ps_model_nm, type = "link")
+
+
+# multilevel
 cluster_ps_model <- glmer(D ~ W_jk + Z_k + 
                             (1 | school_id),
                          family = "binomial",
@@ -109,7 +121,7 @@ cluster_ps_model <- glmer(D ~ W_jk + Z_k +
 
 cluster_level_dat$ps_cluster <- predict(cluster_ps_model, type = "link")
 
-
+#check common support
 cluster_level_dat %>%
   mutate(D = as.character(D)) %>%
   ggplot(aes(x = ps_cluster, fill = D)) +
@@ -118,16 +130,11 @@ cluster_level_dat %>%
 
 # Method 1 ----------------------------------------------------------------
 
-
-# the following isn't working ps_unit is almost perfect prediction
-# how do you do multilevel matchit ?
-m_out_1 <- matchit(D ~ ps_unit, # is this right?
+# switch distance to appropriate ps (multi or not multilevel)
+m_out_1 <- matchit(D ~ ps_unit, # rhs doesn't matter i think here bc distance
                    caliper = .25,
                    distance = example_dat$ps_unit,
                    data = example_dat)
-
-
-
 
 # exact match on site & group
 
