@@ -5,6 +5,7 @@ library(cobalt)
 library(broom)
 library(matchMulti)
 library(nlme)
+library(optmatch)
 
 # https://cran.r-project.org/web/packages/matchMulti/matchMulti.pdf
 
@@ -14,13 +15,15 @@ source("01_dgm/01_dgm_function.R")
 
 set.seed(20220602)
 
-k <- 100 #schools
-j <-20  # teachers 
-i <- 10 # students
+k <- 50 #schools
+j <- 8  # teachers 
+i <- 20 # students
 
 icc3 <- 0.05  # icc for school 
 icc2 <- 0.20 # icc for teachers
 R2 <- .40
+
+# 50 schools 6 teachers per school
 
 
 ps_coef <- matrix(c(.07, 0.8, -0.25, 0.6, -0.4, 1, 1))  #what values for pi 6 and 7 in the notes?
@@ -130,19 +133,50 @@ cluster_level_dat %>%
 
 # Method 1 ----------------------------------------------------------------
 
+#optimal method in matchit doesn't like exact or caliper
+
+match_them <- function(dat, 
+                       #equation_ps = "D ~ ps_unit",
+                       ps_method = "optimal",
+                       exact = NULL, 
+                       ps = dat$ps_unit){
+  
+
+  m_out <- matchit(D ~ ps_unit, 
+                   #caliper = .25,
+                   method = ps_method,
+                   #exact = exact,
+                   distance = ps,
+                   data = dat)
+  
+  match_dat <- match.data(m_out)
+  
+  return(match_dat)
+  
+}
+
+
 # switch distance to appropriate ps (multi or not multilevel)
-m_out_1 <- matchit(D ~ ps_unit, # rhs doesn't matter i think here bc distance
-                   caliper = .25,
-                   distance = example_dat$ps_unit,
-                   data = example_dat)
+system.time(m_out_1 <- match_them(dat = example_dat, 
+                                  ps = example_dat$ps_unit))
 
-# exact match on site & group
+# exact match on site by looping over site
 
-m_out_2 <- matchit(D ~ X_ijk + W_jk + Z_k, 
-                   caliper = .25,
-                   exact = ~ school_id + quintile,
-                   distance = example_dat$ps_unit,
-                   data = example_dat)
+system.time(site_match_data <- 
+  example_dat %>%
+  group_by(school_id) %>%
+  group_modify(~ match_them(.x)))
+  
+
+
+example_dat %>%
+  group_by(school_id, D) %>%
+  summarize(n_teach = n_distinct(teacher_id)) %>%
+  View()
+  
+
+# are schools allowed to have 
+# only treatment teachers or only control teachers
 
 
 treatment_sites <- 
