@@ -140,20 +140,15 @@ cluster_level_dat %>%
 #optimal method in matchit doesn't like exact or caliper
 
 match_them <- function(dat, 
-<<<<<<< HEAD
-                       equation_ps = "D ~ ps_unit",
-=======
-                       #equation_ps = "D ~ ps_unit",
->>>>>>> d8e7a7d9719362f3bb0952dbf464c3a572d61563
                        ps_method = "nearest",
                        exact = NULL, 
                        ps = dat$ps_unit){
   
 
-  m_out <- matchit(as.formula(equation_ps), 
+  m_out <- matchit(D ~ ps,  # the rhs doesn't matter I think 
                    caliper = .25,
                    method = ps_method,
-                   #exact = exact,
+                   exact = exact,
                    distance = ps,
                    data = dat)
   
@@ -167,6 +162,9 @@ match_them <- function(dat,
 
 # unit level data ---------------------------------------------------------
 
+example_dat <- example_dat %>%
+  mutate(ps = ps_unit)
+
 # ignoring sites and groups -----------------------------------------------
 
 # switch distance to appropriate ps (multi or not multilevel)
@@ -176,6 +174,7 @@ system.time(m_out_1 <- match_them(dat = example_dat,
 
 # exact on site -----------------------------------------------------------
 
+# this breaks down with this data - but was working with another seedless data i generated :D 
 # exact match on site by looping over site
 system.time(site_match_data <- 
   example_dat %>%
@@ -209,6 +208,14 @@ system.time(m_out_group <- match_them(dat = example_dat,
 
 # cluster level data ------------------------------------------------------
 
+cluster_level_dat <- cluster_level_dat %>%
+  mutate(ps = ps_cluster)
+
+# is this the same as above but we are using the cluster level data?
+
+# switch distance to appropriate ps (multi or not multilevel)
+system.time(m_out_2 <- match_them(dat = cluster_level_dat, 
+                                  ps = cluster_level_dat$ps_cluster))
 
 
 
