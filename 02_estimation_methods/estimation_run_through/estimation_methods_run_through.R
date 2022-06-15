@@ -13,7 +13,7 @@ library(optmatch)
 
 source("01_dgm/01_dgm_function.R")
 
-set.seed(20220602)
+set.seed(20220615)
 
 k <- 50 #schools
 j <- 8  # teachers 
@@ -23,10 +23,8 @@ icc3 <- 0.05  # icc for school
 icc2 <- 0.20 # icc for teachers
 R2 <- .40
 
-# 50 schools 6 teachers per school
 
-
-ps_coef <- matrix(c(.07, 0.8, -0.25, 0.6, -0.4, 1, 1))  #what values for pi 6 and 7 in the notes?
+ps_coef <- matrix(c(.07, 0.8, -0.25, 0.6, 0.001, 1, 1))  #what values for pi 6 and 7 in the notes?
 pr_star <- .5
 
 outcome_coef <- matrix(c(1, 0.3, .5, .4, -0.2, 1, 1))
@@ -45,6 +43,12 @@ example_dat <- generate_data(k = k,
                              delta = delta)
 
 glimpse(example_dat)
+
+example_dat %>%
+  group_by(school_id, D) %>%
+  summarize(n_teach = n_distinct(teacher_id)) %>%
+  View()
+
 
 
 # create cluster level data - cluster and site covariates
@@ -136,14 +140,14 @@ cluster_level_dat %>%
 #optimal method in matchit doesn't like exact or caliper
 
 match_them <- function(dat, 
-                       #equation_ps = "D ~ ps_unit",
-                       ps_method = "optimal",
+                       equation_ps = "D ~ ps_unit",
+                       ps_method = "nearest",
                        exact = NULL, 
                        ps = dat$ps_unit){
   
 
-  m_out <- matchit(D ~ ps_unit, 
-                   #caliper = .25,
+  m_out <- matchit(as.formula(equation_ps), 
+                   caliper = .25,
                    method = ps_method,
                    #exact = exact,
                    distance = ps,
@@ -156,29 +160,60 @@ match_them <- function(dat,
 }
 
 
+
+# unit level data ---------------------------------------------------------
+
+# ignoring sites and groups -----------------------------------------------
+
 # switch distance to appropriate ps (multi or not multilevel)
 system.time(m_out_1 <- match_them(dat = example_dat, 
                                   ps = example_dat$ps_unit))
 
-# exact match on site by looping over site
 
+# exact on site -----------------------------------------------------------
+
+# exact match on site by looping over site
 system.time(site_match_data <- 
   example_dat %>%
   group_by(school_id) %>%
   group_modify(~ match_them(.x)))
+
+# exact match on site using exact
+# this takes a while 
+system.time(m_out_site <- match_them(dat = example_dat, 
+                                     exact = ~ school_id,
+                                     ps = example_dat$ps_unit))
+
+
+
+# exact on group ----------------------------------------------------------
+
+# exact match on site by looping over site
+system.time(group_match_data <- 
+              example_dat %>%
+              group_by(quintile) %>%
+              group_modify(~ match_them(.x)))
   
+# exact match on site using exact
+# this takes a while 
+system.time(m_out_group <- match_them(dat = example_dat, 
+                                     exact = ~ quintile,
+                                     ps = example_dat$ps_unit))
 
 
-example_dat %>%
-  group_by(school_id, D) %>%
-  summarize(n_teach = n_distinct(teacher_id)) %>%
-  View()
-  
-
-# are schools allowed to have 
-# only treatment teachers or only control teachers
 
 
+# cluster level data ------------------------------------------------------
+
+
+
+
+
+
+
+# looping over treatment sites
+# not complete yet - need to figure out what is happening
+# all sites have treatment teachers? 
 treatment_sites <- 
   example_dat %>%
   filter(D == 1)
