@@ -140,7 +140,11 @@ cluster_level_dat %>%
 #optimal method in matchit doesn't like exact or caliper
 
 match_them <- function(dat, 
+<<<<<<< HEAD
                        equation_ps = "D ~ ps_unit",
+=======
+                       #equation_ps = "D ~ ps_unit",
+>>>>>>> d8e7a7d9719362f3bb0952dbf464c3a572d61563
                        ps_method = "nearest",
                        exact = NULL, 
                        ps = dat$ps_unit){
