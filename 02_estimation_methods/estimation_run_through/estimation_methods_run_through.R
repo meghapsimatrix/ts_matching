@@ -137,7 +137,7 @@ cluster_level_dat %>%
 
 match_them <- function(dat, 
                        #equation_ps = "D ~ ps_unit",
-                       ps_method = "optimal",
+                       ps_method = "nearest",
                        exact = NULL, 
                        ps = dat$ps_unit){
   
