@@ -27,8 +27,68 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
   
   results <-
     rerun(iterations, {
-      dat <- generate_dat(model_params)
-      estimate(dat, design_params)
+      
+
+     # generate student level data ---------------------------------------------
+      dat <- generate_data(k = k,
+                           j = j, 
+                           i = i, 
+                           icc3 = icc3, 
+                           icc2 = icc2, 
+                           R2 = R2,
+                           ps_coef = ps_coef, 
+                           pr_star = pr_star, 
+                           outcome_coef = outcome_coef, 
+                           delta = delta)
+      
+
+     # aggregate to teacher level ----------------------------------------------
+     cluster_level_dat <- 
+        dat %>%
+        group_by(teacher_id) %>%
+        summarize(school_id = mean(school_id),
+                  Z_k = mean(Z_k),
+                  W_jk = mean(W_jk),
+                  D = mean(D),
+                  Y_ijk = mean(Y_ijk)) %>%
+        ungroup()
+     
+
+    # estimate ps -------------------------------------------------------------
+    
+     unit_ps_model <- glmer(D ~ X_ijk + W_jk + Z_k + 
+                              (1 | school_id),
+                            family = "binomial", 
+                            data = dat)
+     
+     dat$ps_unit <- predict(unit_ps_model, type = "link")
+     dat$ps_unit_pr <- predict(unit_ps_model, type = "response")
+     
+      
+     cluster_ps_model <- glmer(D ~ W_jk + Z_k + 
+                                 (1 | school_id),
+                               family = "binomial",
+                               data = cluster_level_dat)
+     
+     cluster_level_dat$ps_cluster <- predict(cluster_ps_model, type = "link")
+     
+     # match -------------------------------------------------------------------
+
+     m_1 <- match_them(dat = dat, ps = dat$ps_unit)
+     # m_2 <-
+     # m_3 <- 
+     
+
+     # outcome models ----------------------------------------------------------
+
+     # something that runs the hlm outcome model and saves estimates etc. 
+     # and the balance stats for each method
+     # then save as long format with method 1 - results then method 2 - results ...
+     
+     # o_1 <- 
+     # o_2 <-
+       
+    
     }) %>%
     bind_rows()
   
