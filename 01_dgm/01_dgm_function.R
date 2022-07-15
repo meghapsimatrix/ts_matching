@@ -101,6 +101,13 @@ generate_data <- function(k, # schools
     mutate(Y_ijk = D * Y_1_ijk + (1 - D) * Y_0_ijk)
   
   
+  dat <- 
+    dat %>%
+    group_by(teacher_id) %>%
+    mutate(X_jk = mean(X_ijk)) %>%
+    ungroup()
+  
+  
   return(dat)
   
   
