@@ -108,6 +108,15 @@ generate_data <- function(k, # schools
     ungroup()
   
   
+  dat$W_q5 <- cut(dat$W_jk, 5,
+                  labels = c(1, 2, 3, 4, 5),
+                  include.lowest = TRUE) 
+  
+  dat$Z_q5 <- cut(dat$Z_k, 5,
+                  labels = c(1, 2, 3, 4, 5),
+                  include.lowest = TRUE)
+  
+  
   return(dat)
   
   
