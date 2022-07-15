@@ -34,9 +34,10 @@ match_them <- function(dat,
 
 mm_3 <- function(dat, 
                  l1_cov, 
-                 l2_cov, 
+                 l2_cov = NULL, 
                  trt, 
-                 l2_id) {
+                 l2_id,
+                 add_id = FALSE) {
   # Notes
   # dat = data frame
   # l1_cov = vector of unit-level covariate names
@@ -65,6 +66,13 @@ mm_3 <- function(dat,
   # save matched data
   mdata <- as.data.frame(matchout$matched)
   
+  if(add_id = TRUE){
+    mdata$pair_id <- (mdata$l3id * 100) + mdata$pair_id
+    mdata <- mdata %>% 
+      select(-l3id)
+    
+  }
+  
   return(mdata)
   
 } 
@@ -72,38 +80,6 @@ mm_3 <- function(dat,
 
 
 # method 6 ----------------------------------------------------------------
-
-# can probably add defaults for function arguments here
-
-mm_them <- function(dat_k,
-                    trt, 
-                    l1_cov,
-                    l2_id){
-  
-  cluster_caliper <- buildCaliper(data = dat_k, 
-                                  treatment = trt, 
-                                  ps.vars = l1_cov, 
-                                  group.id = l2_id, 
-                                  caliper = 1.00)
-  
-  # match clusters within site k
-  matchout <- matchMulti(dat_k, 
-                         treatment = trt, 
-                         school.id = l2_id, 
-                         student.vars = l1_cov,
-                         match.students = FALSE, 
-                         verbose = FALSE, 
-                         school.caliper = cluster_caliper)
-  
-  # save matched data
-  mdata_k <- as.data.frame(matchout$matched)
-  mdata_k$pair_id <- (mdata_k$l3id * 100) + mdata_k$pair.id
-  mdata_k <- subset(mdata+k, select = -c(l3id))
-  
-  hold <- rbind(hold, mdata.k)
-  
-  
-}
 
 mm_6 <- function(dat, 
                  l1_cov, 
@@ -122,85 +98,65 @@ mm_6 <- function(dat,
   # l3_id = name of site-level identifier
   
   # restrict matching to sites that have T & C clusters
+  
+  # this code is in the method 9 code too
   df$tmp <- df[, trt]
   df$l3id <- df[, l3_id]
   
-  dat_m <- dat %>% 
+  dat_m <- 
+    dat %>% 
     group_by(l3id) %>% 
     mutate(tmpm = mean(tmp)) %>% 
     ungroup() %>%
     filter(tmpm > 0 & tmpm < 1) %>% 
     select(-tmp, -tmpm)
   
-  # loop over each site to execute matching separately within each site
-  sid <- unique(dfm$l3id) # index of sites to include in matching
-  hold <- NULL # placeholder to store matched samples
-  
-  # for loops tend to be slower in R 
-  for(k in 1:length(sid)) {
-    
-    sid_k <- sid[k]
-    dat_k <- dat_m[dat_m$l3id == sid.k, ]
-    dat_k <- as.data.frame(df_k)
-    
-    # set caliper for cluster-level pairing
-    cluster_caliper <- buildCaliper(data = df_k, 
-                                    treatment = trt, 
-                                    ps.vars = l1_cov, 
-                                    group.id = l2_id, 
-                                    caliper = 1.00)
-    
-    # match clusters within site k
-    matchout <- matchMulti(df.k, 
-                           treatment = trt, 
-                           school.id = l2.id, 
-                           student.vars = l1.cov,
-                           match.students = FALSE, 
-                           verbose = FALSE, 
-                           school.caliper = cluster.caliper)
-    
-    # save matched data
-    mdata.k <- as.data.frame(matchout$matched)
-    mdata.k$pair.id <- (mdata.k$l3id*100) + mdata.k$pair.id
-    mdata.k <- subset(mdata.k, select = -c(l3id))
-    
-    hold <- rbind(hold, mdata.k)
-    
-  }
+  hold <- 
+    dat_m %>%
+    group_by(l3id) %>%
+    group_modify(~ (mm_them(.x)))  # add in other arguments
   
   return(hold)
   
+
 } 
 
 
-test <- fun.matchmulti6(df = example_dat, l1.cov = std.cov, l2.cov = c("W_q5"), trt = "D", l2.id = "teacher_id", l3.id = "school_id")
-length(unique(test$teacher_id[test$D==1]))
 
+# method_9 ----------------------------------------------------------------
 
-
-# Method 9 ----------------------------------------------------------------
 # Clusters only (multimatch) & Within site-defined group matching
 # NOTE: to execute multimatch within sites, had to make two changes to the matching approach:
 #       1. Removed refined covariate balance option for cluster-level covariates
 #       2. Had to increase the caliper to 1.00 instead of 0.25
 
 # Matching function
-fun.matchmulti9 <- function(df, l1.cov, l2.cov, trt, l2.id, l3.id) {
+mm_9 <- function(df, 
+                 l1_cov, 
+                 l2_cov, 
+                 trt, 
+                 l2_id, 
+                 l3_id) {
   # Notes
   # df = data frame
-  # l1.cov = vector of unit-level covariate names
-  # l2.cov = vector of cluster-level covariate names (categorical versions for refined covariate balance)
+  # l1_cov = vector of unit-level covariate names
+  # l2_cov = vector of cluster-level covariate names (categorical versions for refined covariate balance)
   # NOTE: Not feasible to do l2 refined covariate balance with number of clusters within a site.
   # This part of the matching is removed for within-site matching.
   # trt = name of treatment variable
-  # l2.id = name of cluster-level identifier
-  # l3.id = name of categorical variable that defines site groupings
+  # l2_id = name of cluster-level identifier
+  # l3_id = name of categorical variable that defines site groupings
   
   # restrict matching to sites that have T & C clusters
   df$tmp <- df[,trt]
   df$l3id <- df[,l3.id]
-  dfm <- df %>% group_by(l3id) %>% mutate(tmpm = mean(tmp)) %>% ungroup() %>%
-    filter(tmpm > 0 & tmpm < 1) %>% select(-tmp, -tmpm)
+  
+  dfm <- df %>% 
+    group_by(l3id) %>% 
+    mutate(tmpm = mean(tmp)) %>% 
+    ungroup() %>%
+    filter(tmpm > 0 & tmpm < 1) %>%
+    select(-tmp, -tmpm)
   
   # loop over each site to execute matching separately within each site
   sid <- unique(dfm$l3id) # index of groups to include in matching

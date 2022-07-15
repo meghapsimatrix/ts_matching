@@ -228,7 +228,10 @@ fun.matchmulti6 <- function(df, l1.cov, l2.cov, trt, l2.id, l3.id) {
    df.k <- as.data.frame(df.k)
 
    # set caliper for cluster-level pairing
-   cluster.caliper <- buildCaliper(data = df.k, treatment = trt, ps.vars = l1.cov, group.id = l2.id, caliper = 1.00)
+   cluster.caliper <- buildCaliper(data = df.k, 
+                                   treatment = trt,
+                                   ps.vars = l1.cov, 
+                                   group.id = l2.id, caliper = 1.00)
    
    # match clusters within site k
    matchout <- matchMulti(df.k, treatment = trt, school.id = l2.id, student.vars = l1.cov,
