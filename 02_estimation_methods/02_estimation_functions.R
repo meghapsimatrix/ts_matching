@@ -32,12 +32,12 @@ match_them <- function(dat,
 
 # method 3 ----------------------------------------------------------------
 
-mm_3 <- function(dat, 
-                 l1_cov, 
-                 l2_cov = NULL, 
-                 trt, 
-                 l2_id,
-                 add_id = FALSE) {
+multi_match <- function(dat, 
+                        l1_cov, 
+                        l2_cov = NULL, 
+                        trt, 
+                        l2_id,
+                        add_id = FALSE) {
   # Notes
   # dat = data frame
   # l1_cov = vector of unit-level covariate names
