@@ -56,7 +56,9 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
 
      # match -------------------------------------------------------------------
 
-     m_1 <- match_them(dat = dat, )
+     m_1 <- match_them(dat = dat, 
+                       equation =  D ~ X_ijk + W_jk + Z_k,
+                       caliper = .25)
      # m_2 <-
      # m_3 <- 
      

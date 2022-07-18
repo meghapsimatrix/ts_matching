@@ -11,11 +11,12 @@ library(optmatch)
 # simple matching ---------------------------------------------------------
 
 match_them <- function(dat, 
-                       equation =  D ~ X_ijk + W_jk + Z_k,
+                       equation,
                        ps_method = "nearest",
                        caliper =  .25,
                        ps = NULL,
-                       exact = NULL){
+                       exact = NULL,
+                       replace = FALSE){
   
   
   m_out <- matchit(equation,  
@@ -23,6 +24,7 @@ match_them <- function(dat,
                    caliper = caliper,
                    distance = dist,
                    exact = exact,
+                   replace = replace,
                    data = dat)
   
   match_dat <- match.data(m_out)
