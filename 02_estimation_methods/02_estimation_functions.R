@@ -18,7 +18,7 @@ match_them <- function(dat,
                        exact = NULL){
   
   
-  m_out <- matchit(D ~ equation,  # the rhs doesn't matter I think 
+  m_out <- matchit(equation,  
                    method = ps_method,
                    caliper = caliper,
                    distance = dist,

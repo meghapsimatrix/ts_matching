@@ -56,7 +56,7 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
 
      # match -------------------------------------------------------------------
 
-     m_1 <- match_them(dat = dat, ps = dat$ps_unit)
+     m_1 <- match_them(dat = dat, )
      # m_2 <-
      # m_3 <- 
      
