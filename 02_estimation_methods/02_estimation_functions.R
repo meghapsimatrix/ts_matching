@@ -11,16 +11,18 @@ library(optmatch)
 # simple matching ---------------------------------------------------------
 
 match_them <- function(dat, 
+                       equation =  D ~ X_ijk + W_jk + Z_k,
                        ps_method = "nearest",
-                       exact = NULL, 
-                       ps = dat$ps_unit){
+                       caliper =  .25,
+                       ps = NULL,
+                       exact = NULL){
   
   
-  m_out <- matchit(D ~ ps,  # the rhs doesn't matter I think 
-                   caliper = .25,
+  m_out <- matchit(D ~ equation,  # the rhs doesn't matter I think 
                    method = ps_method,
+                   caliper = caliper,
+                   distance = dist,
                    exact = exact,
-                   distance = ps,
                    data = dat)
   
   match_dat <- match.data(m_out)
@@ -66,7 +68,7 @@ multi_match <- function(dat,
   # save matched data
   mdata <- as.data.frame(matchout$matched)
   
-  if(add_id = TRUE){
+  if(add_id == TRUE){
     mdata$pair_id <- (mdata$l3id * 100) + mdata$pair_id
     mdata <- mdata %>% 
       select(-l3id)
@@ -188,8 +190,6 @@ mm_9 <- function(df,
 } 
 
 
-test <- fun.matchmulti9(df = example_dat, l1.cov = std.cov, l2.cov = c("W_q5", "Z_q5"), trt = "D", l2.id = "teacher_id", l3.id = "quintile")
-length(unique(test$teacher_id[test$D==1]))
 
 
 # Method 12 ----------------------------------------------------------------
@@ -288,15 +288,3 @@ fun.matchmulti12 <- function(df, l1.cov, l2.cov, trt, l2.id, l3.id, group) {
   return(hold)
   
 } 
-
-test <- fun.matchmulti12(df = example_dat, l1.cov = std.cov, l2.cov = c("W_q5"), trt = "D", l2.id = "teacher_id", l3.id = "school_id", group = "quintile")
-length(unique(test$teacher_id[test$D==1]))
-
-
-
-
-
-#match.simple <- matchMulti(example_dat, treatment = 'D', school.id = 'teacher_id',
-#  match.students = FALSE, student.vars = std.cov, verbose=TRUE, keep.target = round(tcn*0.8), tol = 0.25)
-
-#balanceMulti(match.simple, student.cov = std.cov, school.cov = tch.cov)

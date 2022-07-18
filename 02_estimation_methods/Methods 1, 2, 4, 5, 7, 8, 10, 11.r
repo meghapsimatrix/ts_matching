@@ -60,7 +60,13 @@ write.csv(dat_agg,file="test/teacher data.csv",row.names=FALSE)
 
 caliper <- .25
 
-res_M1 <- matchit(D ~ X_ijk + W_jk + Z_k, data = dat, method = "nearest", replace = FALSE, exact = NULL, caliper = caliper)
+res_M1 <- matchit(D ~ X_ijk + W_jk + Z_k, 
+                  data = dat, 
+                  method = "nearest", 
+                  replace = FALSE, 
+                  exact = NULL, 
+                  caliper = caliper)
+
 dat_M1 <- match.data(res_M1)
 
 table(dat_M1$D)

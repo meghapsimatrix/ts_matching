@@ -12,7 +12,7 @@ library(simhelpers)
 #-----------------------------------------------------------
 
 source("01_dgm/01_dgm_function.R")
-# source("02_estimation_methods/02_estimation_functions.R") need to create this
+source("02_estimation_methods/02_estimation_functions.R") 
 source("03_performance_criteria/03_calc_performance.R")
 
 
@@ -54,24 +54,6 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
         ungroup()
      
 
-    # estimate ps -------------------------------------------------------------
-    
-     unit_ps_model <- glmer(D ~ X_ijk + W_jk + Z_k + 
-                              (1 | school_id),
-                            family = "binomial", 
-                            data = dat)
-     
-     dat$ps_unit <- predict(unit_ps_model, type = "link")
-     dat$ps_unit_pr <- predict(unit_ps_model, type = "response")
-     
-      
-     cluster_ps_model <- glmer(D ~ W_jk + Z_k + 
-                                 (1 | school_id),
-                               family = "binomial",
-                               data = cluster_level_dat)
-     
-     cluster_level_dat$ps_cluster <- predict(cluster_ps_model, type = "link")
-     
      # match -------------------------------------------------------------------
 
      m_1 <- match_them(dat = dat, ps = dat$ps_unit)
