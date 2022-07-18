@@ -47,8 +47,11 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
         dat %>%
         group_by(teacher_id) %>%
         summarize(school_id = mean(school_id),
+                  X_jk = mean(X_ijk),
                   Z_k = mean(Z_k),
                   W_jk = mean(W_jk),
+                  Z_q5 = as.character(mean(as.numeric(as.character(Z_q5)))),
+                  W_q5 = as.character(mean(as.numeric(as.character(W_q5)))),
                   D = mean(D),
                   Y_ijk = mean(Y_ijk)) %>%
         ungroup()
@@ -59,9 +62,35 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
      m_1 <- match_them(dat = dat, 
                        equation =  D ~ X_ijk + W_jk + Z_k,
                        caliper = .25)
-     # m_2 <-
-     # m_3 <- 
      
+     m_2 <- match_them(dat = cluster_level_dat, 
+                       equation =  D ~ X_jk + W_jk + Z_k,
+                       caliper = .25)
+     
+     # do we need to make school_id a factor or char?
+     m_4 <- match_them(dat = dat, 
+                       equation =  D ~ X_ijk + W_jk + Z_k,
+                       caliper = 1,
+                       exact = "school_id")
+     
+     m_5 <- match_them(dat = cluster_level_dat, 
+                       equation =  D ~ X_jk + W_jk + Z_k,
+                       caliper = 1,
+                       exact = "school_id")
+     
+     m_7 <- match_them(dat = dat, 
+                       equation =  D ~ X_ijk + W_jk + Z_k,
+                       caliper = 1,
+                       exact = "Z_q5")  # quintile based on Z_k
+     
+     
+     m_8 <- match_them(dat = cluster_level_dat, 
+                       equation =  D ~ X_jk + W_jk + Z_k,
+                       caliper = 1,
+                       exact = "Z_q5")  # quintile based on Z_k
+     
+     
+     # Method 10 - is the hybrid function 
 
      # outcome models ----------------------------------------------------------
 

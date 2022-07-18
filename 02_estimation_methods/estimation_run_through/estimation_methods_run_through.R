@@ -42,6 +42,8 @@ example_dat <- generate_data(k = k,
                              outcome_coef = outcome_coef, 
                              delta = delta)
 
+dat <- example_dat
+
 glimpse(example_dat)
 
 example_dat %>%
