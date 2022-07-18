@@ -127,6 +127,7 @@ cluster_ps_model_nm <- glm(D ~ W_jk + Z_k,
                           family = "binomial",
                           data = cluster_level_dat)
 
+
 cluster_level_dat$ps_cluster_nm <- predict(cluster_ps_model_nm, type = "link")
 
 
@@ -167,7 +168,11 @@ example_dat$Z_q5 <- cut(example_dat$Z_k, 5,
                             include.lowest = TRUE)
 
 # Matching function
-fun.matchmulti3 <- function(df, l1.cov, l2.cov, trt, l2.id) {
+fun.matchmulti3 <- function(df, 
+                            l1.cov, 
+                            l2.cov, 
+                            trt, 
+                            l2.id) {
 # Notes
 # df = data frame
 # l1.cov = vector of unit-level covariate names
@@ -176,11 +181,21 @@ fun.matchmulti3 <- function(df, l1.cov, l2.cov, trt, l2.id) {
 # l2.id = name of cluster-level identifier
 
  # set caliper for cluster-level pairing
- cluster.caliper <- buildCaliper(data = df, treatment = trt, ps.vars = l1.cov, group.id = l2.id, caliper = 0.25)
+ cluster.caliper <- buildCaliper(data = df, 
+                                 treatment = trt, 
+                                 ps.vars = l1.cov, 
+                                 group.id = l2.id, 
+                                 caliper = 0.25)
 
  # execute matching
- matchout <- matchMulti(df, treatment = trt, school.id = l2.id, school.fb = list(l2.cov), student.vars = l1.cov,
-   match.students = FALSE, verbose=FALSE, school.caliper = cluster.caliper)
+ matchout <- matchMulti(df, 
+                        treatment = trt, 
+                        school.id = l2.id, 
+                        school.fb = list(l2.cov), 
+                        student.vars = l1.cov,
+                        match.students = FALSE, 
+                        verbose=FALSE, 
+                        school.caliper = cluster.caliper)
 
  # save matched data
  mdata <- as.data.frame(matchout$matched)
