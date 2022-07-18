@@ -14,7 +14,6 @@ match_them <- function(dat,
                        equation,
                        ps_method = "nearest",
                        caliper =  .25,
-                       ps = NULL,
                        exact = NULL,
                        replace = FALSE){
   
@@ -22,7 +21,6 @@ match_them <- function(dat,
   m_out <- matchit(equation,  
                    method = ps_method,
                    caliper = caliper,
-                   distance = ps,
                    exact = exact,
                    replace = replace,
                    data = dat)
