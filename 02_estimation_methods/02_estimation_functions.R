@@ -22,7 +22,7 @@ match_them <- function(dat,
   m_out <- matchit(equation,  
                    method = ps_method,
                    caliper = caliper,
-                   distance = dist,
+                   distance = ps,
                    exact = exact,
                    replace = replace,
                    data = dat)
