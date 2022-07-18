@@ -90,7 +90,7 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                        exact = "Z_q5")  # quintile based on Z_k
      
      
-     # Method 10 - is the hybrid function 
+    
 
      # outcome models ----------------------------------------------------------
 
