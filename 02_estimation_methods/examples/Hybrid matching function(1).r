@@ -1,33 +1,18 @@
 ################################### Define matching function ###################################
 
 # Matching Function #
-fun.match <- function(dat, SiteID, TeacherID, tx.var, exact.vars, teacher.vars, site.vars, score, crc, replacement,ratio,seed){
+fun.match <- function(dat, 
+                      SiteID, 
+                      TeacherID, tx.var, exact.vars, teacher.vars, site.vars, group, crc, replacement, ratio, seed){
   
   # set seed #
   set.seed(seed)
   
   # set data #
   if(is.null(site.vars)){
-    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, teacher.vars, score)])
+    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, teacher.vars, group)])
   }else{
-    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, teacher.vars, site.vars, score)])
-  }
-  
-  # define cluster sites based on number of schools and subject score #
-  if(length(unique(dat[,SiteID])) < 12){
-    df$site_cluster <- 1
-  }else if(length(unique(dat[,SiteID])) >= 12 & length(unique(dat[,SiteID])) < 20){
-    cluster_q <- quantile(df[,score], probs = seq(0, 1, 1/3))
-    df$site_cluster <- ifelse(df[,score] <= cluster_q[2], 1,
-                              ifelse(df[,score] > cluster_q[2] & df[,score] <= cluster_q[3],2,
-                                     ifelse(df[,score] > cluster_q[3],3,NA)))
-  }else{
-    cluster_q <- quantile(df[,score], probs = seq(0, 1, .2))
-    df$site_cluster <- ifelse(df[,score] <= cluster_q[2],1,
-                              ifelse(df[,score] > cluster_q[2] & df[,score] <= cluster_q[3],2,
-                                     ifelse(df[,score] > cluster_q[3] & df[,score] <= cluster_q[4],3,
-                                            ifelse(df[,score] > cluster_q[4] & df[,score] <= cluster_q[5],4,
-                                                   ifelse(df[,score] > cluster_q[5],5,NA)))))
+    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, teacher.vars, site.vars, group)])
   }
   
   # estimate propensity score with two-level RE model #
@@ -76,10 +61,10 @@ fun.match <- function(dat, SiteID, TeacherID, tx.var, exact.vars, teacher.vars, 
     sid <- sids[j]
     t <- df[df[,SiteID]==sid & df[,tx.var]==1,] # use treatment units in school j
     c1 <- df[df[,SiteID]==sid & df[,tx.var]==0,] # use control units in school j
-    if(any(df[,SiteID]!=sid & df$site_cluster %in% t$site_cluster & df[,tx.var]==0)) {
-      c2 <- df[df[,SiteID]!=sid & df$site_cluster %in% t$site_cluster & df[,tx.var]==0,]
+    if(any(df[,SiteID]!=sid & df[,group] %in% t[,group] & df[,tx.var]==0)) {
+      c2 <- df[df[,SiteID]!=sid & df[,group] %in% t[,group] & df[,tx.var]==0,]
     }else{
-      c2 <- df[df[,SiteID]!=sid & df$site_cluster %in% t$site_cluster,][1,]
+      c2 <- df[df[,SiteID]!=sid & df[,group] %in% t[,group],][1,]
       c2[,2:dim(df)[2]] <- NA
     }		
     tmp1 <- rbind(t,c1)
