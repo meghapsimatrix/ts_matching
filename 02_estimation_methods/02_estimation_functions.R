@@ -15,7 +15,8 @@ match_them <- function(dat,
                        ps_method = "nearest",
                        caliper =  .25,
                        exact = NULL,
-                       replace = FALSE){
+                       replace = FALSE,
+                       student_level = FALSE){
   
   
   m_out <- matchit(equation,  
@@ -27,6 +28,15 @@ match_them <- function(dat,
   
   match_dat <- match.data(m_out)
   
+  
+  if(student_level == TRUE){
+    
+    
+    match_dat <- semi_join(dat, match_dat, by = c("teacher_id")) %>%
+      semi_join(match_dat, by = c("teacher_id")) 
+    
+  }
+  
   return(match_dat)
   
 }
@@ -34,18 +44,16 @@ match_them <- function(dat,
 
 # method 3 ----------------------------------------------------------------
 
-multi_match <- function(dat, 
-                        l1_cov, 
-                        l2_cov = NULL, 
-                        trt, 
+multi_match <- function(dat, # data 
+                        trt, # name of treatment var
+                        l1_cov, # student level cov
+                        l2_cov = NULL, # teacher level cov
                         l2_id,
-                        add_id = FALSE) {
-  # Notes
-  # dat = data frame
-  # l1_cov = vector of unit-level covariate names
-  # l2_cov = vector of cluster-level covariate names (categorical versions for refined covariate balance)
-  # trt = name of treatment variable
-  # l2_id = name of cluster-level identifier
+                        l3_id = NULL,
+                        add_id = FALSE,
+                        caliper,
+                        match_students = FALSE
+                        ) {
 
   
   # set caliper for cluster-level pairing
@@ -53,15 +61,15 @@ multi_match <- function(dat,
                                   treatment = trt, 
                                   ps.vars = l1_cov, 
                                   group.id = l2_id, 
-                                  caliper = 0.25)
+                                  caliper = caliper)
   
   # execute matching
-  matchout <- matchMulti(df, 
+  matchout <- matchMulti(dat, 
                          treatment = trt, 
                          school.id = l2_id, 
                          school.fb = list(l2_cov), 
                          student.vars = l1_cov,
-                         match.students = FALSE, 
+                         match.students = match_students, 
                          verbose = FALSE, 
                          school.caliper = cluster_caliper)
   
@@ -69,9 +77,10 @@ multi_match <- function(dat,
   mdata <- as.data.frame(matchout$matched)
   
   if(add_id == TRUE){
-    mdata$pair_id <- (mdata$l3id * 100) + mdata$pair_id
+    
+    mdata$pair_id <- (mdata$l3_id * 100) + mdata$pair_id
     mdata <- mdata %>% 
-      select(-l3id)
+      select(-l3_id)
     
   }
   
