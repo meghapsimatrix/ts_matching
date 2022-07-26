@@ -61,6 +61,7 @@ multi_match <- function(dat, # data
                         match_students = FALSE
                         ) {
 
+  dat <- as.data.frame(dat)
   
   # set caliper for cluster-level pairing
   cluster_caliper <- buildCaliper(data = dat, 
@@ -83,6 +84,8 @@ multi_match <- function(dat, # data
   mdata <- as.data.frame(matchout$matched)
   
   if(add_id == TRUE){
+    
+    mdata <- as.data.frame(mdata)
     
     mdata$pair_id <- (mdata$l3_id * 100) + mdata$pair_id
     mdata <- mdata %>% 
