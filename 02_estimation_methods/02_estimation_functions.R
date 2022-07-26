@@ -16,7 +16,8 @@ match_them <- function(dat,
                        caliper =  .25,
                        exact = NULL,
                        replace = FALSE,
-                       student_level = FALSE){
+                       student_level = FALSE,
+                       student_dat = NULL){
   
   
   m_out <- matchit(equation,  
@@ -32,12 +33,14 @@ match_them <- function(dat,
   if(student_level == TRUE){
     
     
-    match_dat <- semi_join(dat, match_dat, by = c("teacher_id")) %>%
-      semi_join(match_dat, by = c("teacher_id")) 
-    
-  }
+    match_dat <- semi_join(student_dat, match_dat, by = c("teacher_id")) %>%
+                 left_join(match_dat %>%
+                             select(teacher_id, distance, weights, subclass), by = c("teacher_id")) 
   
+  }
+    
   return(match_dat)
+    
   
 }
 
@@ -300,33 +303,46 @@ fun.matchmulti12 <- function(df, l1.cov, l2.cov, trt, l2.id, l3.id, group) {
 
 
 match_hybrid <-  function(dat, 
-                          SiteID, 
-                          TeacherID, 
-                          tx.var, 
-                          exact.vars, 
-                          teacher.vars, 
-                          site.vars, 
+                          site_id, 
+                          teacher_id, 
+                          tx_var, 
+                          exact_vars, 
+                          teacher_vars, 
+                          site_vars, 
                           group, 
                           crc, 
                           replacement, 
                           ratio, 
-                          seed){
+                          seed,
+                          student_level = FALSE,
+                          student_dat = NULL){
   
   # set seed #
   set.seed(seed)
   
   # set data #
-  if(is.null(site.vars)){
-    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, teacher.vars, group)])
+  if(is.null(site_vars)){
+    df <- as.data.frame(dat[,c(site_id, 
+                               teacher_id, 
+                               tx_var, 
+                               exact_vars, 
+                               teacher_vars, 
+                               group)])
   }else{
-    df <- as.data.frame(dat[,c(SiteID, TeacherID, tx.var, exact.vars, teacher.vars, site.vars, group)])
+    df <- as.data.frame(dat[,c(site_id, 
+                               teacher_id, 
+                               tx_var, 
+                               exact_vars, 
+                               teacher_vars, 
+                               site_vars, 
+                               group)])
   }
   
   # estimate propensity score with two-level RE model #
-  if(is.null(site.vars)){
-    pfmla <- as.formula(paste(tx.var," ~ 1 + ",paste(teacher.vars,collapse="+")," + (1|",SiteID,")"))
+  if(is.null(site_vars)){
+    pfmla <- as.formula(paste(tx_var," ~ 1 + ",paste(teacher_vars,collapse="+")," + (1|",site_id,")"))
   }else{
-    pfmla <- as.formula(paste(tx.var," ~ 1 + ",paste(teacher.vars,collapse="+"),"+",paste(site.vars,collapse="+")," + (1|",SiteID,")"))
+    pfmla <- as.formula(paste(tx_var," ~ 1 + ",paste(teacher_vars,collapse="+"),"+",paste(site_vars,collapse="+")," + (1|",site_id,")"))
   }
   p3 <- glmer(pfmla, data=df, family=binomial(link="logit"))
   #p3 <- rstanarm::stan_glmer(pfmla, data=df, family=binomial(link="logit"))
@@ -335,11 +351,11 @@ match_hybrid <-  function(dat,
   
   # save school-level EB coefficient estimates for between-site matching #
   
-  #psrx <- ranef(p3)[SiteID]
+  #psrx <- ranef(p3)[site_id]
   psrx <- broom.mixed::tidy(p3,effects='ran_vals')$estimate
-  #psrx <- as.data.frame(cbind(c(1:summary(p3)$ngrps),c(rep(1,summary(p3)$ngrps)),as.data.frame(ranef(p3)[SiteID])))
+  #psrx <- as.data.frame(cbind(c(1:summary(p3)$ngrps),c(rep(1,summary(p3)$ngrps)),as.data.frame(ranef(p3)[site_id])))
   psrx <- as.data.frame(cbind(c(1:length(psrx)),c(rep(1,length(psrx))),as.data.frame(broom.mixed::tidy(p3,effects='ran_vals')$estimate)))
-  names(psrx) <- c(SiteID,"ALL","U0")
+  names(psrx) <- c(site_id,"ALL","U0")
   #psfx <- as.data.frame(cbind(1,t(as.matrix(fixef(p3)))))
   psfx <- as.data.frame(cbind(1,t(as.matrix(broom.mixed::tidy(p3)$estimate))))
   #names(psfx)[names(psfx) == "V1"] <- "ALL"
@@ -355,7 +371,7 @@ match_hybrid <-  function(dat,
   m.data3 <- NULL # create placeholder for matched data
   
   # set treatment schools #
-  sids <- sort(unique(df[df[,tx.var]==1,SiteID]))
+  sids <- sort(unique(df[df[,tx_var]==1,site_id]))
   
   output <- list()
   output[['glm output']] <- p3
@@ -366,20 +382,20 @@ match_hybrid <-  function(dat,
     
     # set data #
     sid <- sids[j]
-    t <- df[df[,SiteID]==sid & df[,tx.var]==1,] # use treatment units in school j
-    c1 <- df[df[,SiteID]==sid & df[,tx.var]==0,] # use control units in school j
-    if(any(df[,SiteID]!=sid & df[,group] %in% t[,group] & df[,tx.var]==0)) {
-      c2 <- df[df[,SiteID]!=sid & df[,group] %in% t[,group] & df[,tx.var]==0,]
+    t <- df[df[,site_id]==sid & df[,tx_var]==1,] # use treatment units in school j
+    c1 <- df[df[,site_id]==sid & df[,tx_var]==0,] # use control units in school j
+    if(any(df[,site_id]!=sid & df[,group] %in% t[,group] & df[,tx_var]==0)) {
+      c2 <- df[df[,site_id]!=sid & df[,group] %in% t[,group] & df[,tx_var]==0,]
     }else{
-      c2 <- df[df[,SiteID]!=sid & df[,group] %in% t[,group],][1,]
+      c2 <- df[df[,site_id]!=sid & df[,group] %in% t[,group],][1,]
       c2[,2:dim(df)[2]] <- NA
     }		
     tmp1 <- rbind(t,c1)
     
-    pspar.j <- as.vector(psparx[psparx[,SiteID]==j,]) # use ps model parameter estimates for school j
+    pspar.j <- as.vector(psparx[psparx[,site_id]==j,]) # use ps model parameter estimates for school j
     
     # match 1: within-school #
-    m.out1 <- tryCatch(matchit(tmp1[,tx.var] ~ tmp1$pscore, data = tmp1, method = "nearest", replace = replacement, exact = exact.vars, caliper=crc, distance=tmp1$pscore,ratio=ratio),error=function(e)NULL)
+    m.out1 <- tryCatch(matchit(tmp1[,tx_var] ~ tmp1$pscore, data = tmp1, method = "nearest", replace = replacement, exact = exact_vars, caliper=crc, distance=tmp1$pscore,ratio=ratio),error=function(e)NULL)
     output[['Within School Matches']][[j]] <- m.out1
     
     # create data frame of matched units from match 1 # 
@@ -391,9 +407,9 @@ match_hybrid <-  function(dat,
     
     # select unmatched treatment units in school j #
     t.m1 <- tryCatch(match.data(m.out1, weights="PSW3W", distance="PS3W", group="treat"),error=function(e)NULL)
-    t.m1 <- t.m1[ ,c(TeacherID,exact.vars,"PSW3W")]
+    t.m1 <- t.m1[ ,c(teacher_id,exact_vars,"PSW3W")]
     t.x <- t; t.x$PSW3W <- NA # placeholder for schools with no within-school matches
-    t2 <- tryCatch(merge(t, t.m1, by=c(TeacherID,exact.vars), all.x=TRUE),error=function(e)t.x)
+    t2 <- tryCatch(merge(t, t.m1, by=c(teacher_id,exact_vars), all.x=TRUE),error=function(e)t.x)
     t2$PSW3W <- ifelse(is.na(t2$PSW3W),0,1)
     t2 <- t2[t2$PSW3W==0,]
     t2$pscore.j <- t2$pscore
@@ -402,9 +418,9 @@ match_hybrid <-  function(dat,
     # re-calculate control unit propensity score based on school j pscore model parameter estimates #
     c2$PSW3W <- 0
     
-    if(is.null(site.vars)){
+    if(is.null(site_vars)){
       tfmla <- NULL
-      for(i in teacher.vars){
+      for(i in teacher_vars){
         tfmla.i <- paste0(pspar.j[,i],"*c2$",i)
         tfmla <- paste(tfmla,tfmla.i,sep=" + ")
       }
@@ -412,13 +428,13 @@ match_hybrid <-  function(dat,
       newfmla <- paste(pspar.j[,"(Intercept)"],tfmla,"+",pspar.j[,"U0"])
     }else{
       tfmla <- NULL
-      for(i in teacher.vars){
+      for(i in teacher_vars){
         tfmla.i <- paste0(pspar.j[,i],"*c2$",i)
         tfmla <- paste(tfmla,tfmla.i,sep=" + ")
       }
       
       sfmla <- NULL
-      for(i in site.vars){
+      for(i in site_vars){
         sfmla.i <- paste0(pspar.j[,i],"*c2$",i)
         sfmla <- paste(sfmla,sfmla.i,sep=" + ")
       }
@@ -430,7 +446,7 @@ match_hybrid <-  function(dat,
     tmp2 <- rbind(t2,c2)
     
     # match 2: between-school: only if control units fall within treatment unit range #
-    m.out2 <- tryCatch(matchit(tmp2[,tx.var] ~ tmp2$pscore.j, data = tmp2, method = "nearest", replace = replacement, exact = exact.vars, caliper=crc, distance=tmp2$pscore.j,ratio=ratio),error=function(e)NULL)
+    m.out2 <- tryCatch(matchit(tmp2[,tx_var] ~ tmp2$pscore.j, data = tmp2, method = "nearest", replace = replacement, exact = exact_vars, caliper=crc, distance=tmp2$pscore.j,ratio=ratio),error=function(e)NULL)
     output[['Bewteen School Matches']][[j]] <- m.out2
     
     # create data frame of matched units from match 2 #
@@ -457,5 +473,18 @@ match_hybrid <-  function(dat,
   } # close 2 stage matching loop
   output[['Matched Data']] <- m.data3
   
-  return(output)
+  
+  match_dat <- output$data
+  
+  
+  if(student_level == TRUE){
+    
+    match_dat <- semi_join(student_dat, match_dat, by = c("teacher_id")) %>%
+      left_join(match_dat %>%
+                  select(teacher_id, p3, pscore), by = c("teacher_id")) 
+    
+  }
+  
+  return(match_dat)
+  
 }

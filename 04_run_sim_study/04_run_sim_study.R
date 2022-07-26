@@ -66,7 +66,9 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
      
      m_2 <- match_them(dat = cluster_level_dat, 
                        equation =  D ~ X_jk + W_jk + Z_k,
-                       caliper = .25)
+                       caliper = .25,
+                       student_level = TRUE,
+                       student_dat = dat)
      
      # do we need to make school_id a factor or char?
      m_4 <- match_them(dat = dat, 
@@ -77,7 +79,9 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
      m_5 <- match_them(dat = cluster_level_dat, 
                        equation =  D ~ X_jk + W_jk + Z_k,
                        caliper = 1,
-                       exact = "school_id")
+                       exact = "school_id",
+                       student_level = TRUE,
+                       student_dat = dat)
      
      m_7 <- match_them(dat = dat, 
                        equation =  D ~ X_ijk + W_jk + Z_k,
@@ -88,16 +92,18 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
      m_8 <- match_them(dat = cluster_level_dat, 
                        equation =  D ~ X_jk + W_jk + Z_k,
                        caliper = 1,
-                       exact = "Z_q5")  # quintile based on Z_k
+                       exact = "Z_q5",  # quintile based on Z_k
+                       student_level = TRUE,
+                       student_dat = dat)  
      
 
     m_10 <- match_hybrid(dat = dat, 
-                         SiteID = "school_id", 
-                         TeacherID = "student_id", 
-                         tx.var = "D", 
-                         exact.vars = NULL, 
-                         teacher.vars = c("X_ijk","W_jk"), 
-                         site.vars = "Z_k",
+                         site_id = "school_id", 
+                         teacher_id = "student_id", 
+                         tx_var = "D", 
+                         exact_vars = NULL, 
+                         teacher_vars = c("X_ijk","W_jk"), 
+                         site_vars = "Z_k",
                          group = "Z_q5", # changed the name here bc Jordan is using 2 different quintiles
                          crc = caliper,
                          replacement = FALSE,
@@ -106,18 +112,20 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
     
     
     
-    res_M11 <- match_hybrid(dat = cluster_level_dat, 
-                            SiteID = "school_id", 
-                            TeacherID = "teacher_id", 
-                            tx.var = "D", 
-                            exact.vars = NULL, 
-                            teacher.vars = c("X_jk","W_jk"), 
-                            site.vars = "Z_k",
-                            group = "Z_q5",
-                            crc = caliper,
-                            replacement = FALSE,
-                            ratio = 1,
-                            seed = 1234)
+    m_11 <- match_hybrid(dat = cluster_level_dat, 
+                         site_id = "school_id", 
+                         teacher_id = "teacher_id", 
+                         tx_var = "D", 
+                         exact_vars = NULL, 
+                         teacher_vars = c("X_jk","W_jk"), 
+                         site_vars = "Z_k",
+                         group = "Z_q5",
+                         crc = caliper,
+                         replacement = FALSE,
+                         ratio = 1,
+                         seed = 1234,
+                         student_level = TRUE,
+                         student_dat = dat) 
     
     
     
