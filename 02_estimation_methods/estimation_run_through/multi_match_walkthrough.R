@@ -27,8 +27,7 @@ m_6 <- dat_m %>%
                  l2_cov = NULL,
                  l2_id = "teacher_id",
                  l3_id = "school_id",
-                 caliper = 1,
-                 add_id = FALSE))
+                 caliper = 1))
 
 
 m_9 <- dat_m %>%
@@ -45,7 +44,7 @@ m_9 <- dat_m %>%
 
 m_12_hold <- 
   dat_m %>%
-  group_by(Z_q5) %>%
+  group_by(school_id) %>%
   do(multi_match(., 
                  trt = "D",
                  l1_cov = c("X_ijk"),
@@ -53,7 +52,7 @@ m_12_hold <-
                  l2_id = "teacher_id",
                  l3_id = "Z_q5",
                  caliper = 1,
-                 add_id = TRUE))
+                 add_id = "school"))
 
 
 # Identify Clusters NOT in a Within-Site Pair
@@ -87,4 +86,4 @@ m_12_hold_2 <- dat_m2 %>%
                  l2_id = "teacher_id",
                  l3_id = "Z_q5",
                  caliper = 1,
-                 add_id = TRUE))
+                 add_id = "pair"))
