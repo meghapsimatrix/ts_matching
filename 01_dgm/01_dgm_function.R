@@ -116,6 +116,8 @@ generate_data <- function(k, # schools
                   labels = c(1, 2, 3, 4, 5),
                   include.lowest = TRUE)
   
+  dat <- as.data.frame(dat)
+  
   
   return(dat)
   

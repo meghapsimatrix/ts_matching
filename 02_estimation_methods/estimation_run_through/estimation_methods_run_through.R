@@ -239,3 +239,5 @@ length(sids)
 
 
 
+results <- pmap_dfr(matched_sets, estimate_effect)
+

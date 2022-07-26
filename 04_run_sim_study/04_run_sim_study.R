@@ -6,6 +6,9 @@ library(stringr)
 library(tibble)
 library(simhelpers)
 library(broom.mixed)
+library(lme4)
+library(lmerTest)
+library(janitor)
 
 
 #-----------------------------------------------------------
@@ -70,6 +73,13 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                        student_level = TRUE,
                        student_dat = dat)
      
+     m_3 <- multi_match(dat = dat,
+                        trt = "D",
+                        l1_cov = c("X_ijk"),
+                        l2_cov = c("W_q5", "Z_q5"),
+                        l2_id = "teacher_id",
+                        caliper = .25)
+     
      # do we need to make school_id a factor or char?
      m_4 <- match_them(dat = dat, 
                        equation =  D ~ X_ijk + W_jk + Z_k,
@@ -108,7 +118,9 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                          crc = caliper,
                          replacement = FALSE,
                          ratio = 1,
-                         seed = 1234) # may need to change seed
+                         seed = 1234,
+                         by_student = TRUE,
+                         student_dat = dat) # may need to change seed
     
     
     
@@ -124,7 +136,7 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                          replacement = FALSE,
                          ratio = 1,
                          seed = 1234,
-                         student_level = TRUE,
+                         by_student = FALSE,
                          student_dat = dat) 
     
     
@@ -135,9 +147,16 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
      # something that runs the hlm outcome model and saves estimates etc. 
      # and the balance stats for each method
      # then save as long format with method 1 - results then method 2 - results ...
+    
+     matched_sets <- tibble(matched_dat = list(m_1, m_2, m_3,
+                                               m_4, m_5, 
+                                               m_7, m_8,
+                                               m_10, m_11),
+                            method = c("1", "2", "3", "4", "5",
+                                       "7", "8", "10", "11"))
      
-     # o_1 <- 
-     # o_2 <-
+    results <- pmap_dfr(matched_sets, estimate_effect)
+    
        
     
     }) %>%
