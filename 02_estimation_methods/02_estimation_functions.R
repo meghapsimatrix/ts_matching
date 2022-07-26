@@ -87,12 +87,10 @@ multi_match <- function(dat, # data
   
   if(add_id == TRUE){
     
-    mdata <- as.data.frame(mdata)
+    mdata <- as.data.frame(mdata) %>%
+      clean_names()
     
-    mdata$pair_id <- (mdata$l3_id * 100) + mdata$pair_id
-    mdata <- mdata %>% 
-      select(-l3_id)
-    
+    mdata$pair_id <- (mdata$school_id * 100) + mdata$pair_id
   }
   
   return(mdata)

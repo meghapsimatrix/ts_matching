@@ -110,7 +110,7 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                              l2_id = "teacher_id",
                              l3_id = "school_id",
                              caliper = 1,
-                             add_id = FALSE))
+                             add_id = TRUE))
      
      m_7 <- match_them(dat = dat, 
                        equation =  D ~ X_ijk + W_jk + Z_k,
@@ -135,7 +135,7 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                              l2_id = "teacher_id",
                              l3_id = "Z_q5",
                              caliper = 1,
-                             add_id = FALSE))
+                             add_id = TRUE))
      
 
     m_10 <- match_hybrid(dat = dat, 
