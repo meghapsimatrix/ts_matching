@@ -248,13 +248,7 @@ fun.matchmulti6 <- function(df, l1.cov, l2.cov, trt, l2.id, l3.id) {
 } 
 
 
-test <- fun.matchmulti6(df = example_dat, 
-                        l1.cov = std.cov, 
-                        l2.cov = c("W_q5"), 
-                        trt = "D", 
-                        l2.id = "teacher_id", 
-                        l3.id = "school_id")
-
+test <- fun.matchmulti6(df = example_dat, l1.cov = std.cov, l2.cov = c("W_q5"), trt = "D", l2.id = "teacher_id", l3.id = "school_id")
 length(unique(test$teacher_id[test$D==1]))
 
 
