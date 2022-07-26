@@ -58,7 +58,7 @@ multi_match <- function(dat, # data
                         l2_cov = NULL, # teacher level cov
                         l2_id,
                         l3_id = NULL,
-                        add_id = NULL,
+                        add_id = "none",
                         caliper,
                         match_students = FALSE
                         ) {
@@ -83,12 +83,12 @@ multi_match <- function(dat, # data
                          school.caliper = cluster_caliper)
   
   # save matched data
-  mdata <- as.data.frame(matchout$matched)
+  mdata <- as.data.frame(matchout$matched) %>%
+    rename(pair_id = pair.id)
   
   if(add_id == "school"){
     
-    mdata <- as.data.frame(mdata) %>%
-      clean_names()
+    mdata <- as.data.frame(mdata) 
     
     mdata$pair_id <- (mdata$school_id * 100) + mdata$pair_id
     
@@ -96,7 +96,10 @@ multi_match <- function(dat, # data
     
     mdata$pair_id <- (as.numeric(as.character(mdata$Z_q5)) * 100000) + mdata$pair_id
     
-  } 
+  } else if(add_id == "none"){
+    
+    mdata <- mdata
+  }
   
   return(mdata)
   
