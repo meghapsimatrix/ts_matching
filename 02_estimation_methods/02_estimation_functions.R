@@ -48,7 +48,9 @@ match_them <- function(dat,
 }
 
 
-# method 3 ----------------------------------------------------------------
+# multi matching ----------------------------------------------------------
+
+
 
 multi_match <- function(dat, # data 
                         trt, # name of treatment var
@@ -98,6 +100,7 @@ multi_match <- function(dat, # data
 } 
 
 
+# hybrid matching ---------------------------------------------------------
 
 match_hybrid <-  function(dat, 
                           site_id, 

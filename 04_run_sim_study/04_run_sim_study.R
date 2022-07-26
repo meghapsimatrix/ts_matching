@@ -60,6 +60,14 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                   Y_ijk = mean(Y_ijk)) %>%
         ungroup()
      
+     # restrict to sites that have t and c clusters
+     dat_m <- dat %>%
+       group_by(school_id) %>%
+       mutate(tmpm = mean(D)) %>%
+       ungroup() %>%
+       filter(tmpm > 0 & tmpm < 1) %>%
+       select(-tmpm)
+     
 
      # match -------------------------------------------------------------------
 
@@ -93,6 +101,17 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                        student_level = TRUE,
                        student_dat = dat)
      
+     m_6 <- dat_m %>%
+              group_by(school_id) %>%
+              do(multi_match(., 
+                             trt = "D",
+                             l1_cov = c("X_ijk"),
+                             l2_cov = NULL,
+                             l2_id = "teacher_id",
+                             l3_id = "school_id",
+                             caliper = 1,
+                             add_id = FALSE))
+     
      m_7 <- match_them(dat = dat, 
                        equation =  D ~ X_ijk + W_jk + Z_k,
                        caliper = 1,
@@ -105,6 +124,18 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                        exact = "Z_q5",  # quintile based on Z_k
                        student_level = TRUE,
                        student_dat = dat)  
+     
+    
+     m_9 <- dat_m %>%
+              group_by(Z_q5) %>%
+              do(multi_match(., 
+                             trt = "D",
+                             l1_cov = c("X_ijk"),
+                             l2_cov = c("W_q5", "Z_q5"),
+                             l2_id = "teacher_id",
+                             l3_id = "Z_q5",
+                             caliper = 1,
+                             add_id = FALSE))
      
 
     m_10 <- match_hybrid(dat = dat, 
@@ -149,11 +180,11 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
      # then save as long format with method 1 - results then method 2 - results ...
     
      matched_sets <- tibble(matched_dat = list(m_1, m_2, m_3,
-                                               m_4, m_5, 
-                                               m_7, m_8,
+                                               m_4, m_5, m_6,
+                                               m_7, m_8, m_9,
                                                m_10, m_11),
-                            method = c("1", "2", "3", "4", "5",
-                                       "7", "8", "10", "11"))
+                            method = c("1", "2", "3", "4", "5", "6",
+                                       "7", "8", "9", "10", "11"))
      
     results <- pmap_dfr(matched_sets, estimate_effect)
     
