@@ -75,8 +75,8 @@ generate_data <- function(k, # schools
  # Treatment indicator -----------------------------------------------------
   
   pr <- 1/ (1 + exp(-(X_ps %*% ps_coef)))  
-  D <- ifelse(pr > pr_star, 1, 0) 
-  #D <- rbinom(k * j, 1, pr)
+  #D <- ifelse(pr > pr_star, 1, 0) 
+  D <- rbinom(k * j, 1, pr)
   
   dat$D <- D[dat$teacher_id]
   
