@@ -26,7 +26,19 @@ source("03_performance_criteria/03_calc_performance.R")
 
 # need to fill this in 
 
-run_sim <- function(iterations, model_params, design_params, seed = NULL) {
+run_sim <- function(iterations, 
+                    k,
+                    j, 
+                    i, 
+                    icc3, 
+                    icc2, 
+                    R2,
+                    ps_coef, 
+                    pr_star, 
+                    outcome_coef, 
+                    delta,
+                    seed = NULL) {
+  
   if (!is.null(seed)) set.seed(seed)
   
   results <-
@@ -234,7 +246,7 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                             method = c("1", "2", "3", "4", "5", "6",
                                        "7", "8", "9", "10", "11", "12"))
      
-    results <- pmap_dfr(matched_sets, estimate_effect) %>%
+    pmap_dfr(matched_sets, estimate_effect) %>%
       mutate(true_effect = delta)
     
        
@@ -242,7 +254,7 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
     }) %>%
     bind_rows()
   
-  calc_performance(results, model_params)
+  calc_performance(results)
 }
 
 #-------------------------------------

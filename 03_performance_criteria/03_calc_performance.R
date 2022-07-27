@@ -14,18 +14,20 @@ calc_performance <- function(results) {
   
   abs_criteria <- 
     results %>%
-    group_by(method) %<%
+    group_by(method) %>%
     do(calc_absolute(., estimates = estimate, true_param = true_effect,
-                     perfm_criteria = "bias", "rmse")) %>%
+                     perfm_criteria = c("bias", "rmse"))) %>%
     ungroup()
   
   mean_smd <- 
     results %>%
-    group_by(methods) %>%
-    summarize(mean_smd = mean(smd)) %>%
+    group_by(method) %>%
+    summarize(across(U_ijk:Z_k, ~  mean(.x, na.rm = TRUE))) %>%
     ungroup()
   
-  performance_measures <- left_join(abs_criteria, mean_smd, by = "method")
+  performance_measures <- left_join(abs_criteria, mean_smd, by = "method") %>%
+    mutate(method = as.numeric(method)) %>%
+    arrange(method)
 
   
   return(performance_measures)

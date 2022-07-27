@@ -338,7 +338,7 @@ match_hybrid <-  function(dat,
 calc_balance <- function(dat_match, 
                          dat_full = dat, 
                          tx_var = "D", 
-                         vars = c("Z_k","r_k","W_jk","u_jk","X_jk","X_ijk","U_ijk")){
+                         vars = c("Z_k", "W_jk", "X_jk", "X_ijk", "U_ijk")){
   
   dat_match <- as.data.frame(dat_match)
   
@@ -423,7 +423,7 @@ estimate_effect <- function(matched_dat,
     clean_names()
   
   results <- bind_cols(results, bal_res) %>%
-    select(method, r_k:Z_k, estimate:p_value)
+    select(method, U_ijk:Z_k, estimate:p_value)
   
   return(results)
 }
