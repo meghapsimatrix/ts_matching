@@ -101,7 +101,10 @@ multi_match <- function(dat, # data
     mdata <- mdata
   }
   
+  mdata$weights <- 1
+  
   return(mdata)
+  
   
 } 
 
@@ -283,17 +286,43 @@ match_hybrid <-  function(dat,
   match_dat <- output$data
   
   if(by_student == TRUE){
+    
+  # Create weights for comparison students selected more than once #
+    for(i in unique(match_dat$student_id)){
+      match_dat[which(match_dat$student_id == i),"N"] <- nrow(match_dat[which(match_dat$student_id == i),])
+    }
+    match_dat$weights <- 1/match_dat$N
+    
+    # Drop the duplicate matched cases #
+    match_dat <- match_dat[!duplicated(match_dat[c("student_id")]),]
+    
 
-  match_dat <- semi_join(student_dat, match_dat, by = c("student_id")) %>%
-      left_join(match_dat %>%
-                  select(student_id, p3, pscore), by = c("student_id"))
+    match_dat <- semi_join(student_dat, match_dat, by = c("student_id")) %>%
+                 left_join(match_dat %>%
+                      select(student_id, p3, pscore, weights), by = c("student_id"))
+  
+  
+  
   
   } else if(by_student == FALSE){
     
-  match_dat <- semi_join(student_dat, match_dat, by = c("teacher_id")) %>%
-      left_join(match_dat %>%
-                  select(teacher_id, p3, pscore), by = c("teacher_id"))
     
+    # Create weights for comparison teachers selected more than once #
+    for(i in unique(match_dat$teacher_id)){
+      match_dat[which(match_dat$teacher_id==i),"N"] <- nrow(match_dat[which(match_dat$teacher_id==i),])
+    }
+    match_dat$weights <- 1/match_dat$N
+    
+    # Drop the duplicate matched cases #
+    match_dat <- match_dat[!duplicated(match_dat[c("teacher_id")]),]
+    
+    match_dat <- semi_join(student_dat, match_dat, by = c("teacher_id")) %>%
+          left_join(match_dat %>%
+                  select(teacher_id, p3, pscore, weights), by = c("teacher_id"))
+    
+  
+  
+  
   }
   
 
@@ -301,6 +330,76 @@ match_hybrid <-  function(dat,
   return(match_dat)
   
 }
+
+# calculate balance -------------------------------------------------------
+
+
+#Check balance Function #
+calc_balance <- function(dat_match, 
+                         dat_full = dat, 
+                         tx_var = "D", 
+                         vars = c("Z_k","r_k","W_jk","u_jk","X_jk","X_ijk","U_ijk")){
+  
+  dat_match <- as.data.frame(dat_match)
+  
+  # write weighted SD function #
+  weight_sd.fxn <- function(x,wt) sqrt(sum(wt*(x - weighted.mean(x, wt))^2)/(length(x)-1))
+  
+  # full sample #
+  table.trt_full <- rbind()
+  table.ctrl_full <- rbind()
+  table.sd_full <- rbind()
+  
+  for(i in vars){
+    trt_full <- dat_full[dat_full[,tx_var]==1,]
+    ctrl_full <- dat_full[dat_full[,tx_var]==0,]
+    
+    table.trt_full <- rbind(table.trt_full,c(i,mean(trt_full[,i],na.rm=TRUE)))
+    table.ctrl_full <- rbind(table.ctrl_full,c(i,mean(ctrl_full[,i],na.rm=TRUE)))
+    table.sd_full <- rbind(table.sd_full,c(i,sd(dat_full[,i],na.rm=TRUE)))
+  }
+  table.full <- cbind(table.trt_full,table.ctrl_full[,2],table.sd_full[,2])
+  colnames(table.full) <- c("Variable","Mean_trt","Mean_ctrl","SD_all")
+  table.full <- data.frame(table.full)
+  
+  table.full$SMD <- (as.numeric(as.character(table.full$Mean_trt)) - as.numeric(as.character(table.full$Mean_ctrl)))/as.numeric(as.character(table.full$SD_all))
+  
+  # matched sample #
+  table.trt_match <- rbind()
+  table.ctrl_match <- rbind()
+  table.sd_match <- rbind()
+  
+  for(i in vars){
+    trt_match <- dat_match[dat_match[,tx_var]==1,]
+    ctrl_match <- dat_match[dat_match[,tx_var]==0,]
+    
+    table.trt_match <- rbind(table.trt_match,c(i,weighted.mean(trt_match[,i],trt_match$weights)))
+    table.ctrl_match <- rbind(table.ctrl_match,c(i,weighted.mean(ctrl_match[,i],ctrl_match$weights)))
+    table.sd_match <- rbind(table.sd_match,c(i,weight_sd.fxn(dat_match[,i],dat_match$weights)))
+  }
+  table.match <- cbind(table.trt_match,table.ctrl_match[,2],table.sd_match[,2])
+  colnames(table.match) <- c("Variable","Mean_trt","Mean_ctrl","SD_all")
+  table.match <- data.frame(table.match)
+  
+  table.match$SMD <- (as.numeric(as.character(table.match$Mean_trt)) - as.numeric(as.character(table.match$Mean_ctrl)))/as.numeric(as.character(table.match$SD_all))
+  
+  # combine tables #
+  table.all <- cbind(table.full,table.match[,2:ncol(table.match)])
+  colnames(table.all)[2:5] <- paste(colnames(table.all)[2:5],"Full",sep="_")
+  colnames(table.all)[6:9] <- paste(colnames(table.all)[6:9],"Match",sep="_")
+  
+  # cutting out other stuff 
+  res <- table.all %>%
+    select(var = Variable,
+           smd = SMD_Match) %>%
+    spread(var, smd)
+  
+  return(res)
+  
+}
+
+
+
 
 
 
@@ -314,12 +413,19 @@ estimate_effect <- function(matched_dat,
   out_mod_1 <- lmer(Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + 
                       (1 | teacher_id) + (1 | school_id),
                     data = matched_dat)
+  
+  bal_res <- calc_balance(matched_dat)
+  
   #Store results
   results <- tidy(out_mod_1) %>%
     filter(term == "D") %>% 
     mutate(method = method) %>%
     clean_names()
   
+  results <- bind_cols(results, bal_res) %>%
+    select(method, r_k:Z_k, estimate:p_value)
+  
   return(results)
 }
+
 

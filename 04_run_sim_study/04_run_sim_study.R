@@ -234,7 +234,8 @@ run_sim <- function(iterations, model_params, design_params, seed = NULL) {
                             method = c("1", "2", "3", "4", "5", "6",
                                        "7", "8", "9", "10", "11", "12"))
      
-    results <- pmap_dfr(matched_sets, estimate_effect)
+    results <- pmap_dfr(matched_sets, estimate_effect) %>%
+      mutate(true_effect = delta)
     
        
     

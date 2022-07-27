@@ -1,4 +1,22 @@
+# cobalt way
 
+calc_bal <- function(dat){
+  
+  bal_stats <-
+    bal.tab(D ~ Z_k + r_k + W_jk + u_jk + X_jk + X_ijk + U_ijk,
+            data = dat,
+            method = "weighting",
+            weights = "weights",
+            s.d.denom = "treated")
+  
+  bal_dat <- 
+    bal_stats$Balance %>%
+    rownames_to_column("var") %>%
+    select(var, smd = Diff.Adj)
+  
+  return(bal_dat)
+  
+}
 
 
 
