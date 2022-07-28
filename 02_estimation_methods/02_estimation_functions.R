@@ -337,7 +337,6 @@ match_hybrid <-  function(dat,
 
 #Check balance Function #
 calc_balance <- function(dat_match, 
-                         #dat_full = dat, 
                          tx_var = "D", 
                          vars = c("Z_k", "W_jk", "X_jk", "X_ijk", "U_ijk")){
   
