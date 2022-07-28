@@ -122,7 +122,7 @@ run_sim <- function(iterations,
                              l2_cov = NULL,
                              l2_id = "teacher_id",
                              l3_id = "school_id",
-                             caliper = 1,
+                             caliper = 4,
                              add_id = "school"))
      
      m_7 <- match_them(dat = dat, 
