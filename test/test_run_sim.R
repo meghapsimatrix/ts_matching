@@ -1,7 +1,7 @@
 source("test/dgm_params.R")
 
 system.time(
-  check <- run_sim(iterations = 2,
+  check <- run_sim(iterations = 1,
                    k = k,
                    j = j,
                    i = i,
