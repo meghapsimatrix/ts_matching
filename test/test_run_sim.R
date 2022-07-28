@@ -11,8 +11,14 @@ system.time(
                    ps_coef = ps_coef,
                    pr_star = pr_star,
                    outcome_coef = outcome_coef,
-                   delta = delta)
+                   delta = delta,
+                   seed = 20220726)
 )
+
+
+
+
+# checking perf criteria --------------------------------------------------
 
 res <- pmap_dfr(matched_sets, estimate_effect) %>%
   mutate(true_effect = delta)
