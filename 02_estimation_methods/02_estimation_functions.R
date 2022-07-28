@@ -9,6 +9,7 @@ library(optmatch)
 library(lmerTest)
 library(broom.mixed)
 library(janitor)
+library(parameters)
 
 
 # simple matching ---------------------------------------------------------
@@ -421,9 +422,15 @@ estimate_effect <- function(matched_dat,
     filter(term == "D") %>% 
     mutate(method = method) %>%
     clean_names()
+
+  ci <- ci(out_mod_1) %>%
+    clean_names() %>%
+    filter(parameter == "D") %>%
+    select(term = parameter, ci_low, ci_high)
   
   results <- bind_cols(results, bal_res) %>%
-    select(method, U_ijk:Z_k, estimate:p_value)
+    left_join(ci, by = "term") %>%
+    select(method, U_ijk:Z_k, estimate:p_value, ci_low, ci_high)
   
   return(results)
 }

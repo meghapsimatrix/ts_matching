@@ -19,13 +19,22 @@ calc_performance <- function(results) {
                      perfm_criteria = c("bias", "rmse"))) %>%
     ungroup()
   
+  
+  ci_cov <- 
+    results %>%
+    group_by(method) %>%
+    do(calc_coverage(., lower_bound = ci_low, upper_bound = ci_high, true_param = true_effect)) %>%
+    ungroup() %>%
+    select(-K)
+  
   mean_smd <- 
     results %>%
     group_by(method) %>%
     summarize(across(U_ijk:Z_k, ~  mean(.x, na.rm = TRUE))) %>%
     ungroup()
   
-  performance_measures <- left_join(abs_criteria, mean_smd, by = "method") %>%
+  performance_measures <- left_join(abs_criteria, ci_cov, by = "method") %>%
+    left_join(mean_smd, by = "method") %>%
     mutate(method = as.numeric(method)) %>%
     arrange(method)
 

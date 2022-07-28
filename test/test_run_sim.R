@@ -18,6 +18,6 @@ res <- pmap_dfr(matched_sets, estimate_effect) %>%
   mutate(true_effect = delta)
 
 
-check_res <- bind_rows(res, res)
+##check_res <- bind_rows(res, res)
 
-calc_performance(check_res)
+perfm_res <- calc_performance(res)

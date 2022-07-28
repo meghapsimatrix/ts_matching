@@ -9,6 +9,7 @@ library(broom.mixed)
 library(lme4)
 library(lmerTest)
 library(janitor)
+library(parameters)
 
 
 #-----------------------------------------------------------
