@@ -147,7 +147,7 @@ run_sim <- function(iterations,
                              l2_cov = c("W_q5", "Z_q5"),
                              l2_id = "teacher_id",
                              l3_id = "Z_q5",
-                             caliper = 1,
+                             caliper = 4,
                              add_id = "school"))
      
 
@@ -192,7 +192,7 @@ run_sim <- function(iterations,
                      l2_cov = NULL,
                      l2_id = "teacher_id",
                      l3_id = "Z_q5",
-                     caliper = 1,
+                     caliper = 4,
                      add_id = "school"))
     
     
@@ -226,7 +226,7 @@ run_sim <- function(iterations,
                      l2_cov = NULL,
                      l2_id = "teacher_id",
                      l3_id = "Z_q5",
-                     caliper = 1,
+                     caliper = 4,
                      add_id = "pair"))
     
     
