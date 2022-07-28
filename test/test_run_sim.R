@@ -1,7 +1,7 @@
 source("test/dgm_params.R")
 
 system.time(
-  check <- run_sim(iterations = 1,
+  check <- run_sim(iterations = 2,
                    k = k,
                    j = j,
                    i = i,
@@ -11,8 +11,8 @@ system.time(
                    ps_coef = ps_coef,
                    pr_star = pr_star,
                    outcome_coef = outcome_coef,
-                   delta = delta) #,
-                   #seed = 20220726)
+                   delta = delta,
+                   seed = 20220726)
 )
 
 #163.818 
