@@ -399,7 +399,7 @@ estimate_effect <- function(matched_dat,
   
   if(sum(matched_dat$weights == 0)){
     
-    results <- data.frame(method = NA,
+    results <- data.frame(method = method,
                           K = NA,
                           bias = NA,
                           bias_mcse = NA,
