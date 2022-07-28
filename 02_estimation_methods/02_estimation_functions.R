@@ -74,15 +74,17 @@ multi_match <- function(dat, # data
                                   caliper = caliper)
   
   # execute matching
-  matchout <- matchMulti(dat, 
+  matchout <- tryCatch(matchMulti(dat, 
                          treatment = trt, 
                          school.id = l2_id, 
                          school.fb = list(l2_cov), 
                          student.vars = l1_cov,
                          match.students = match_students, 
                          verbose = FALSE, 
-                         school.caliper = cluster_caliper)
+                         school.caliper = cluster_caliper),
+                        error = function(e) NULL)
   
+  if(!is.null(matchout)){
   # save matched data
   mdata <- as.data.frame(matchout$matched) %>%
     rename(pair_id = pair.id)
@@ -102,7 +104,16 @@ multi_match <- function(dat, # data
     mdata <- mdata
   }
   
-  mdata$weights <- 1
+    mdata$weights <- 1
+  
+  } else{
+    
+    mdata <- dat
+    mdata$weights <- 0
+    
+  }
+  
+  
   
   return(mdata)
   
@@ -385,6 +396,25 @@ calc_balance <- function(dat_match,
 
 estimate_effect <- function(matched_dat,
                             method) {
+  
+  if(sum(matched_dat$weights == 0)){
+    
+    results <- data.frame(method = NA,
+                          K = NA,
+                          bias = NA,
+                          bias_mcse = NA,
+                          rmse = NA, 
+                          rmse_mcse = NA,
+                          coverage = NA,
+                          coverage_mcse = NA,
+                          width = NA,
+                          width_mcse = NA,
+                          U_ijk = NA,
+                          W_jk = NA, 
+                          X_ijk = NA,
+                          X_jk = NA, 
+                          Z_k = NA)
+  } else{
  
   #Run model
   out_mod_1 <- lmer(Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + 
@@ -407,6 +437,8 @@ estimate_effect <- function(matched_dat,
   results <- bind_cols(results, bal_res) %>%
     left_join(ci, by = "term") %>%
     select(method, U_ijk:Z_k, estimate:p_value, ci_low, ci_high)
+  
+  }
   
   return(results)
 }
