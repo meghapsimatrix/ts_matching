@@ -400,20 +400,18 @@ estimate_effect <- function(matched_dat,
   if(sum(matched_dat$weights == 0)){
     
     results <- data.frame(method = method,
-                          K = NA,
-                          bias = NA,
-                          bias_mcse = NA,
-                          rmse = NA, 
-                          rmse_mcse = NA,
-                          coverage = NA,
-                          coverage_mcse = NA,
-                          width = NA,
-                          width_mcse = NA,
                           U_ijk = NA,
-                          W_jk = NA, 
+                          W_jk = NA,
                           X_ijk = NA,
-                          X_jk = NA, 
-                          Z_k = NA)
+                          X_jk = NA,
+                          Z_k = NA,
+                          estimate = NA,
+                          std_error = NA,
+                          statistic = NA, 
+                          df = NA,
+                          p_value = NA,
+                          ci_low = NA, 
+                          ci_high = NA)
   } else{
  
   #Run model
