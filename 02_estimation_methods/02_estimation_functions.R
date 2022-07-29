@@ -108,8 +108,8 @@ multi_match <- function(dat, # data
   
   } else{
     
-    mdata <- dat
-    mdata$weights <- 0
+    mdata <- data.frame(matrix(ncol = 16, nrow = 0))
+    colnames(mdata) <- c("student_id", "teacher_id", "school_id",  "Z_k", "W_jk", "X_ijk", "U_ijk", "r_k", "u_jk", "D", "Y_ijk", "X_jk", "W_q5", "Z_q5", "pair_id", "weights")
     
   }
   
@@ -397,7 +397,7 @@ calc_balance <- function(dat_match,
 estimate_effect <- function(matched_dat,
                             method) {
   
-  if(sum(matched_dat$weights == 0)){
+  if(nrow(matched_dat == 0){
     
     results <- data.frame(method = method,
                           U_ijk = NA,
