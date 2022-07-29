@@ -397,7 +397,7 @@ calc_balance <- function(dat_match,
 estimate_effect <- function(matched_dat,
                             method) {
   
-  if(nrow(matched_dat == 0){
+  if(nrow(matched_dat) == 0){
     
     results <- data.frame(method = method,
                           U_ijk = NA,
