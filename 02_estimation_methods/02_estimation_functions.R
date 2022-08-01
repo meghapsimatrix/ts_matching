@@ -437,7 +437,7 @@ estimate_effect <- function(matched_dat,
   results <- bind_cols(results, bal_res) %>%
     left_join(ci, by = "term") %>%
     select(method, U_ijk:Z_k, estimate:p_value, ci_low, ci_high) %>%
-    mutatte(prop_t = sum(matched_dat$D) / n_t_all))  # is this correct for all methods?
+    mutate(prop_t = sum(matched_dat$D) / n_t_all)  # is this correct for all methods?
   
   }
   
