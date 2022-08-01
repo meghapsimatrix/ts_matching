@@ -1,7 +1,6 @@
 library(tidyverse)
 library(MatchIt)
 library(lme4)
-library(cobalt)
 library(broom)
 library(matchMulti)
 library(nlme)
