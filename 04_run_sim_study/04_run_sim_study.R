@@ -80,7 +80,6 @@ run_sim <- function(iterations,
        ungroup() %>%
        filter(tmpm > 0 & tmpm < 1) %>%
        select(-tmpm)
-     
 
      # match -------------------------------------------------------------------
 
@@ -245,7 +244,8 @@ run_sim <- function(iterations,
                                                m_7, m_8, m_9,
                                                m_10, m_11, m_12),
                             method = c("1", "2", "3", "4", "5", "6",
-                                       "7", "8", "9", "10", "11", "12"))
+                                       "7", "8", "9", "10", "11", "12"),
+                            n_t_all = sum(dat$D))
      
     pmap_dfr(matched_sets, estimate_effect) %>%
       mutate(true_effect = delta)

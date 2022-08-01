@@ -33,10 +33,18 @@ calc_performance <- function(results) {
     summarize(across(U_ijk:Z_k, ~  mean(.x, na.rm = TRUE))) %>%
     ungroup()
   
+  mean_prop <- 
+    results %>%
+    group_by(method) %>%
+    summarize(prop_t_m = mean(prop_t, na.rm = TRUE)) %>%
+    ungroup
+  
   performance_measures <- left_join(abs_criteria, ci_cov, by = "method") %>%
     left_join(mean_smd, by = "method") %>%
+    left_join(mean_prop, by = "method") %>%
     mutate(method = as.numeric(method)) %>%
     arrange(method)
+
 
   
   return(performance_measures)
