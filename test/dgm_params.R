@@ -1,5 +1,5 @@
 
-#set.seed(2020727)
+set.seed(2020727)
 
 k <- 50 #schools
 j <- 8  # teachers 

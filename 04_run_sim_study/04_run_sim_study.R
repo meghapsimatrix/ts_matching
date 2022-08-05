@@ -67,8 +67,8 @@ run_sim <- function(iterations,
                   X_jk = mean(X_ijk),
                   Z_k = mean(Z_k),
                   W_jk = mean(W_jk),
-                  Z_q5 = as.character(mean(as.numeric(as.character(Z_q5)))),
-                  W_q5 = as.character(mean(as.numeric(as.character(W_q5)))),
+                  Z_q5 = as.character(mean(as.numeric(Z_q5))),
+                  W_q5 = as.character(mean(as.numeric(W_q5))),
                   D = mean(D),
                   Y_ijk = mean(Y_ijk)) %>%
         ungroup()
@@ -283,6 +283,8 @@ params <-
     seed = round(runif(1) * 2^30) + 1:n()
   )
 
+# this is just to test
+params <- params[1:3, ]
 
 #--------------------------------------------------------
 # run simulations in parallel - future + furrr workflow
