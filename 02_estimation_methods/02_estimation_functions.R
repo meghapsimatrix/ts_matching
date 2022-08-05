@@ -66,13 +66,17 @@ multi_match <- function(dat, # data
   dat <- as.data.frame(dat)
   
   # set caliper for cluster-level pairing
-  cluster_caliper <- buildCaliper(data = dat, 
+  cluster_caliper <- tryCatch(buildCaliper(data = dat, 
                                   treatment = trt, 
                                   ps.vars = l1_cov, 
                                   group.id = l2_id, 
-                                  caliper = caliper)
+                                  caliper = caliper),
+                              error = function(e) NULL)
   
   # execute matching
+  
+  if(!is.null(cluster_caliper)){
+    
   matchout <- tryCatch(matchMulti(dat, 
                          treatment = trt, 
                          school.id = l2_id, 
@@ -82,6 +86,12 @@ multi_match <- function(dat, # data
                          verbose = FALSE, 
                          school.caliper = cluster_caliper),
                         error = function(e) NULL)
+  
+  } else{
+    
+    matchout <- NULL
+    
+  }
   
   if(!is.null(matchout)){
   # save matched data
