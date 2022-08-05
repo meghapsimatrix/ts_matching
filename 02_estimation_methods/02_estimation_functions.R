@@ -74,9 +74,6 @@ multi_match <- function(dat, # data
                               error = function(e) NULL)
   
   # execute matching
-  
-  if(!is.null(cluster_caliper)){
-    
   matchout <- tryCatch(matchMulti(dat, 
                          treatment = trt, 
                          school.id = l2_id, 
@@ -86,12 +83,6 @@ multi_match <- function(dat, # data
                          verbose = FALSE, 
                          school.caliper = cluster_caliper),
                         error = function(e) NULL)
-  
-  } else{
-    
-    matchout <- NULL
-    
-  }
   
   if(!is.null(matchout)){
   # save matched data
