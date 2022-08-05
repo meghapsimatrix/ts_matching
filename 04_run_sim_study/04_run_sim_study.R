@@ -242,13 +242,18 @@ run_sim <- function(iterations,
      # something that runs the hlm outcome model and saves estimates etc. 
      # and the balance stats for each method
      # then save as long format with method 1 - results then method 2 - results ...
+     
+     dat <- dat %>%
+       mutate(weights = 1)
     
-     matched_sets <- tibble(matched_dat = list(dat %>% mutate(weights = 1), 
+     matched_sets <- tibble(matched_dat = list(dat, dat,
                                                m_1, m_2, m_3,
                                                m_4, m_5, m_6,
                                                m_7, m_8, m_9,
                                                m_10, m_11, m_12),
-                            method = c("0", "1", "2", "3", "4", "5", "6",
+                            outcome_formula = c(rep("Y_ijk ~ D + (1 | teacher_id) + (1 | school_id)", 2),
+                                                rep("Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + (1 | teacher_id) + (1 | school_id)", 12)),
+                            method = c("0.1", "0.2", "1", "2", "3", "4", "5", "6",
                                        "7", "8", "9", "10", "11", "12"),
                             n_t_all = sum(dat$D))
      
@@ -267,7 +272,7 @@ run_sim <- function(iterations,
 # Experimental Design
 #-------------------------------------
 
-# include design matrix, exclude to_test
+# include design matrix
 # make sure this is different for each person! :D 
 # use your zip code!
 set.seed(20220805) # change this seed value!
@@ -285,27 +290,9 @@ design_factors <- list(
 params <-
   cross_df(design_factors) %>%
   mutate(
-    iterations = 2, # change this to how many ever iterations
+    iterations = 400, # change this to how many ever iterations
     seed = round(runif(1) * 2^30) + 1:n()
   )
-
-# this is just to test
-# CHANGE FOR ACTUAL SIMULATION :D 
-params <- params[1, ]
-
-
-# run sim in serial -------------------------------------------------------
-
-
-library(purrr)
-
-system.time(
-  results <-
-    params %>%
-    mutate(res = pmap(., .f = run_sim)) %>%
-    unnest(cols = res)
-)
-
 
 #--------------------------------------------------------
 # run simulations in parallel - future + furrr workflow
@@ -318,16 +305,6 @@ library(furrr)
 plan(multisession) # choose an appropriate plan from the future package
 system.time(results <- evaluate_by_row(params, run_sim))
 
-# OR
-plan(multisession)
-system.time(
-  results <-
-    params %>%
-    mutate(res = future_pmap(., .f = run_sim)) %>%
-    unnest(cols = res)
-)
-
-
 #--------------------------------------------------------
 # Save results and details
 #--------------------------------------------------------
@@ -335,4 +312,7 @@ system.time(
 session_info <- sessionInfo()
 run_date <- date()
 
-save(params, results, session_info, run_date, file = "simulation_results.Rdata")
+# add your initials 
+# upload results to sharepoint and let megha know
+# megha to upload on github
+save(params, results, session_info, run_date, file = "simulation_results_mj.Rdata")

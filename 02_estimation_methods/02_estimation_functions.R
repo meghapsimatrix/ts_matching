@@ -495,6 +495,8 @@ calc_balance <- function(dat_match,
 
 
 estimate_effect <- function(matched_dat,
+                            outcome_formula = "Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + 
+                              (1 | teacher_id) + (1 | school_id)",
                             method,
                             n_t_all) {
   
@@ -517,8 +519,7 @@ estimate_effect <- function(matched_dat,
   } else{
  
   #Run model
-  out_mod_1 <- lmer(Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + 
-                      (1 | teacher_id) + (1 | school_id),
+  out_mod_1 <- lmer(as.formula(outcome_formula),
                     data = matched_dat)
   
   bal_res <- calc_balance(matched_dat)
