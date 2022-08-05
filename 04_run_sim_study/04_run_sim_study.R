@@ -289,7 +289,7 @@ params <-
 
 # this is just to test
 # CHANGE FOR ACTUAL SIMULATION :D 
-params <- params[1:3, ]
+params <- params[1, ]
 
 
 # run sim in serial -------------------------------------------------------
@@ -312,6 +312,7 @@ system.time(
 library(future)
 library(furrr)
 
+# USE THIS ONE
 plan(multisession) # choose an appropriate plan from the future package
 system.time(results <- evaluate_by_row(params, run_sim))
 
