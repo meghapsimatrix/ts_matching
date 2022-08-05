@@ -269,6 +269,7 @@ run_sim <- function(iterations,
 
 # include design matrix, exclude to_test
 # make sure this is different for each person! :D 
+# use your zip code!
 set.seed(20220805) # change this seed value!
 
 # now express the simulation parameters as vectors/lists
