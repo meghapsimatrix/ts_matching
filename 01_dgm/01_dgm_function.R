@@ -116,8 +116,7 @@ generate_data <- function(k, # schools
                   labels = c(1, 2, 3, 4, 5),
                   include.lowest = TRUE)
   
-  dat <- as.data.frame(dat) %>%
-    mutate_at(vars(W_q5, Z_q5), as.character)
+  dat <- as.data.frame(dat)
   
   
   return(dat)

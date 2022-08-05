@@ -67,8 +67,8 @@ run_sim <- function(iterations,
                   X_jk = mean(X_ijk),
                   Z_k = mean(Z_k),
                   W_jk = mean(W_jk),
-                  Z_q5 = as.character(mean(as.numeric(Z_q5))),
-                  W_q5 = as.character(mean(as.numeric(W_q5))),
+                  Z_q5 = as.factor(as.character(mean(as.numeric(Z_q5)))),
+                  W_q5 = as.factor(as.character(mean(as.numeric(W_q5)))),
                   D = mean(D),
                   Y_ijk = mean(Y_ijk)) %>%
         ungroup()
@@ -192,7 +192,8 @@ run_sim <- function(iterations,
                      l2_id = "teacher_id",
                      l3_id = "Z_q5",
                      caliper = 4,
-                     add_id = "school"))
+                     add_id = "school")) %>%
+      as.data.frame()
     
     
     # Identify Clusters NOT in a Within-Site Pair
@@ -226,7 +227,9 @@ run_sim <- function(iterations,
                      l2_id = "teacher_id",
                      l3_id = "Z_q5",
                      caliper = 4,
-                     add_id = "pair"))
+                     add_id = "pair")) %>%
+      as.data.frame() %>%
+      mutate(Z_q5 = as.factor(Z_q5))
     
     
      m_12 <- bind_rows(m_12_hold, m_12_hold_2)
@@ -285,6 +288,20 @@ params <-
 
 # this is just to test
 params <- params[1, ]
+
+
+# run sim in serial -------------------------------------------------------
+
+
+library(purrr)
+
+system.time(
+  results <-
+    params %>%
+    mutate(res = pmap(., .f = run_sim)) %>%
+    unnest(cols = res)
+)
+
 
 #--------------------------------------------------------
 # run simulations in parallel - future + furrr workflow

@@ -107,8 +107,23 @@ multi_match <- function(dat, # data
   
   } else{
     
-    mdata <- data.frame(matrix(ncol = 16, nrow = 0))
-    colnames(mdata) <- c("student_id", "teacher_id", "school_id",  "Z_k", "W_jk", "X_ijk", "U_ijk", "r_k", "u_jk", "D", "Y_ijk", "X_jk", "W_q5", "Z_q5", "pair_id", "weights")
+    mdata <- data.frame(student_id = integer(),
+                        teacher_id = integer(),
+                        school_id = integer(),
+                        Z_k = double(),
+                        W_jk = double(),
+                        X_ijk = double(),
+                        U_ijk = double(),
+                        r_k = double(),
+                        u_jk = double(),
+                        D = integer(),
+                        Y_ijk = double(),
+                        X_jk = double(),
+                        W_q5 = factor(levels = 1:5),
+                        Z_q5 = factor(levels = 1:5),
+                        pair_id = integer(),
+                        weights = double())
+                        
     
   }
   
