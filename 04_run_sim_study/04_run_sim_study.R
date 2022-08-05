@@ -155,7 +155,7 @@ run_sim <- function(iterations,
                          teacher_id = "student_id", 
                          tx_var = "D", 
                          exact_vars = NULL, 
-                         teacher_vars = c("X_ijk","W_jk"), 
+                         teacher_vars = c("X_ijk", "W_jk"), 
                          site_vars = "Z_k",
                          group = "Z_q5", # changed the name here bc Jordan is using 2 different quintiles
                          crc = 1,
@@ -172,7 +172,7 @@ run_sim <- function(iterations,
                          teacher_id = "teacher_id", 
                          tx_var = "D", 
                          exact_vars = NULL, 
-                         teacher_vars = c("X_jk","W_jk"), 
+                         teacher_vars = c("X_jk", "W_jk"), 
                          site_vars = "Z_k",
                          group = "Z_q5",
                          crc = 1,
@@ -275,7 +275,7 @@ run_sim <- function(iterations,
 # include design matrix
 # make sure this is different for each person! :D 
 # use your zip code!
-set.seed(20220805) # change this seed value!
+set.seed(78745) # change this seed value!
 
 # now express the simulation parameters as vectors/lists
 
@@ -290,9 +290,13 @@ design_factors <- list(
 params <-
   cross_df(design_factors) %>%
   mutate(
-    iterations = 400, # change this to how many ever iterations
+    iterations = 2, # change this to how many ever iterations
     seed = round(runif(1) * 2^30) + 1:n()
   )
+
+length(design_factor)
+nrow(params)
+head(params)
 
 #--------------------------------------------------------
 # run simulations in parallel - future + furrr workflow
@@ -315,4 +319,4 @@ run_date <- date()
 # add your initials 
 # upload results to sharepoint and let megha know
 # megha to upload on github
-save(params, results, session_info, run_date, file = "simulation_results_mj.Rdata")
+save(params, results, session_info, run_date, file = "test/simulation_results_mj_test.Rdata")
