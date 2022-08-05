@@ -243,11 +243,12 @@ run_sim <- function(iterations,
      # and the balance stats for each method
      # then save as long format with method 1 - results then method 2 - results ...
     
-     matched_sets <- tibble(matched_dat = list(m_1, m_2, m_3,
+     matched_sets <- tibble(matched_dat = list(dat %>% mutate(weights = 1), 
+                                               m_1, m_2, m_3,
                                                m_4, m_5, m_6,
                                                m_7, m_8, m_9,
                                                m_10, m_11, m_12),
-                            method = c("1", "2", "3", "4", "5", "6",
+                            method = c("0", "1", "2", "3", "4", "5", "6",
                                        "7", "8", "9", "10", "11", "12"),
                             n_t_all = sum(dat$D))
      
@@ -267,7 +268,7 @@ run_sim <- function(iterations,
 #-------------------------------------
 
 # include design matrix, exclude to_test
-
+# make sure this is different for each person! :D 
 set.seed(20220805) # change this seed value!
 
 # now express the simulation parameters as vectors/lists
