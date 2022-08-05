@@ -284,7 +284,7 @@ params <-
   )
 
 # this is just to test
-params <- params[1:3, ]
+params <- params[1, ]
 
 #--------------------------------------------------------
 # run simulations in parallel - future + furrr workflow
