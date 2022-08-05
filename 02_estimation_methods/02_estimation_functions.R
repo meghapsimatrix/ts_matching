@@ -395,7 +395,7 @@ match_hybrid <-  function(dat,
   output[['Matched Data']] <- m.data3
   
   
-  match_dat <- output$data
+  match_dat <- m.data3
   
   if(by_student == TRUE){
     
