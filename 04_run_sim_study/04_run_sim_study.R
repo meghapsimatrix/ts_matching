@@ -193,6 +193,7 @@ run_sim <- function(iterations,
                      l3_id = "Z_q5",
                      caliper = 4,
                      add_id = "school")) %>%
+      ungroup() %>%
       as.data.frame()
     
     
@@ -228,8 +229,8 @@ run_sim <- function(iterations,
                      l3_id = "Z_q5",
                      caliper = 4,
                      add_id = "pair")) %>%
-      as.data.frame() %>%
-      mutate(Z_q5 = as.factor(Z_q5))
+      ungroup() %>%
+      as.data.frame() 
     
     
      m_12 <- bind_rows(m_12_hold, m_12_hold_2)
