@@ -25,19 +25,19 @@ source("03_performance_criteria/03_calc_performance.R")
 # Simulation Driver - should return a data.frame or tibble
 #-----------------------------------------------------------
 
-# need to fill this in 
+# check if default parameters make sense
 
 run_sim <- function(iterations, 
                     k,
                     j, 
-                    i, 
+                    i = 20, 
                     icc3, 
                     icc2, 
-                    R2,
-                    ps_coef, 
-                    pr_star, 
-                    outcome_coef, 
-                    delta,
+                    R2 = .40,
+                    ps_coef = matrix(c(-1.25, 1, .25, 1.5, 1.5, .20, .20)), 
+                    pr_star = .5, 
+                    outcome_coef = matrix(c(1, 0.3, .5, .4, -0.2, 1, 1)), 
+                    delta = -0.4,
                     seed = NULL) {
   
   if (!is.null(seed)) set.seed(seed)
@@ -264,7 +264,7 @@ run_sim <- function(iterations,
 
 # include design matrix, exclude to_test
 
-set.seed(20220510) # change this seed value!
+set.seed(20220805) # change this seed value!
 
 # now express the simulation parameters as vectors/lists
 
@@ -279,7 +279,7 @@ design_factors <- list(
 params <-
   cross_df(design_factors) %>%
   mutate(
-    iterations = 2400, # change this to how many ever iterations
+    iterations = 2, # change this to how many ever iterations
     seed = round(runif(1) * 2^30) + 1:n()
   )
 
