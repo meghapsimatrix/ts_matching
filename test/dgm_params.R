@@ -13,7 +13,7 @@ R2 <- .40
 ps_coef <- matrix(c(-1.25, 1, .25, 1.5, 1.5, .20, .20))  #what values for pi 6 and 7 in the notes?
 pr_star <- .5
 
-outcome_coef <- matrix(c(1, 0.3, .5, .4, -0.2, 1, 1))
+outcome_coef <- matrix(c(1, 0.3, 0.1, 0.1, 0.5, 0.4, 0.1, 0.1, -0.2, 1, 1))
 
 delta <- -0.4
 

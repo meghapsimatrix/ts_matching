@@ -86,6 +86,11 @@ generate_data <- function(k, # schools
   X_outcome <- 
     design_mat %>%
     select(intercept, X_ijk, U_ijk, W_jk, Z_k, r_k, u_jk) %>%
+    mutate(X_ijk_2 = X_ijk ^ 2, 
+           X_ijk_3 = X_ijk ^ 3,
+           W_jk_2 = W_jk ^ 2,
+           W_jk_3 = W_jk ^3) %>%
+    select(intercept, X_ijk, X_ijk_2, X_ijk_3, U_ijk, W_jk,, W_jk_2, W_jk_3, Z_k, r_k, u_jk) %>%
     as.matrix()
     
   Y_0_ijk <- rnorm(n = N,
