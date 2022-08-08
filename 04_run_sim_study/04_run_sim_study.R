@@ -290,7 +290,7 @@ design_factors <- list(
 params <-
   cross_df(design_factors) %>%
   mutate(
-    iterations = 50, # change this to how many ever iterations
+    iterations = 10, # change this to how many ever iterations
     seed = round(runif(1) * 2^30) + 1:n()
   )
 
@@ -319,5 +319,5 @@ run_date <- date()
 # add your initials 
 # upload results to sharepoint and let megha know
 # megha to upload on github
-save(params, results, session_info, run_date, file = "test/simulation_results_mj_test_50.Rdata")
+save(params, results, session_info, run_date, file = "test/simulation_results_mj_test_10.Rdata")
 
