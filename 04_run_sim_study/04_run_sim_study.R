@@ -255,7 +255,7 @@ run_sim <- function(iterations,
                                                 rep("Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + (1 | teacher_id) + (1 | school_id)", 13)),
                             method = c("0.1", "0.2", "1", "2", "3", "4", "5", "6",
                                        "7", "8", "9", "10", "11", "12"),
-                            n_t_all = sum(dat$D))
+                            n_t_all = sum(cluster_level_dat$D))
      
     pmap_dfr(matched_sets, estimate_effect) %>%
       mutate(true_effect = delta)
@@ -290,7 +290,7 @@ design_factors <- list(
 params <-
   cross_df(design_factors) %>%
   mutate(
-    iterations = 10, # change this to how many ever iterations
+    iterations = 50, # change this to how many ever iterations
     seed = round(runif(1) * 2^30) + 1:n()
   )
 
@@ -319,5 +319,5 @@ run_date <- date()
 # add your initials 
 # upload results to sharepoint and let megha know
 # megha to upload on github
-save(params, results, session_info, run_date, file = "test/simulation_results_mj_test_10.Rdata")
+save(params, results, session_info, run_date, file = "test/simulation_results_mj_test_50.Rdata")
 

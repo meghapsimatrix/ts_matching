@@ -30,7 +30,7 @@ calc_performance <- function(results) {
   mean_smd <- 
     results %>%
     group_by(method) %>%
-    summarize(across(U_ijk:Z_k, ~  mean(.x, na.rm = TRUE))) %>%
+    summarize(across(U_ijk:Z_k, ~  mean(abs(.x), na.rm = TRUE))) %>%
     ungroup()
   
   mean_prop <- 
