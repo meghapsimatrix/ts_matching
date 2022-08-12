@@ -294,7 +294,7 @@ params <-
     seed = round(runif(1) * 2^30) + 1:n()
   )
 
-length(design_factor)
+length(design_factors)
 nrow(params)
 head(params)
 
