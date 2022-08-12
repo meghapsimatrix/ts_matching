@@ -90,12 +90,16 @@ generate_data <- function(k, # schools
            X_ijk_3 = X_ijk ^ 3,
            W_jk_2 = W_jk ^ 2,
            W_jk_3 = W_jk ^3) %>%
-    select(intercept, X_ijk, X_ijk_2, X_ijk_3, U_ijk, W_jk,, W_jk_2, W_jk_3, Z_k, r_k, u_jk) %>%
+    select(intercept, X_ijk, X_ijk_2, X_ijk_3, U_ijk, 
+           W_jk, W_jk_2, W_jk_3, Z_k, r_k, u_jk) %>%
     as.matrix()
     
   Y_0_ijk <- rnorm(n = N,
                    mean = X_outcome %*% outcome_coef,
                    sd = sqrt(1 - icc2 - icc3 - R2))
+  
+  # standardizing Y_0_ijk
+  Y_0_ijk <- (Y_0_ijk - mean(Y_0_ijk)) / sd(Y_0_ijk)
   
   Y_1_ijk <- Y_0_ijk + delta
   
