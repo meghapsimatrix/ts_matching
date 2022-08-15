@@ -20,42 +20,54 @@ generate_data <- function(k, # schools
 
   
   N <- i * j * k # total number of observations - 
+  total_teachers <- k * j # total number of clusters
   
   # covariates --------------------------------------------------------------
   
   # questions - should we do multivariate normal - 
   # the covariates aren't correlated with each other right now
   
+  # generate site-level data
+  
   Z_k <- rnorm(k)  # mean 0 sd 1 by default
-  W_jk <- rnorm(k * j)
-  X_ijk <- rnorm(N)
-  
-  U_ijk <- rnorm(N)   # unobserved student-level covariate
-  
-  # Residuals ---------------------------------------------------------------
-  
   r_k <- rnorm(k, 0, sqrt(icc3))
-  u_jk <- rnorm(k * j, 0, sqrt(icc2))
-
-  # data --------------------------------------------------------------------
-  total_teachers <- k * j
   
-  dat <- data.frame(student_id = 1:N,
-                    teacher_id = rep(1:total_teachers, each = i),
-                    school_id = rep(1:k, each = N/k))
-
   
-  # covariates 
-  dat$Z_k <- Z_k[dat$school_id]
-  dat$W_jk <- W_jk[dat$teacher_id]
-  dat$X_ijk <- X_ijk
-  dat$U_ijk <- U_ijk
   
-  # error terms
-  dat$r_k <- r_k[dat$school_id]
-  dat$u_jk <- u_jk[dat$teacher_id]
+  # generate cluster & unit level data for each site
+  
+  hold <- NULL
+  
+  for(k. in 1:k) {
+    
+    school_id <- rep(k., i*j)
+    
+    W_jk <- rep(rnorm(j, -0.2*Z_k[k.], 1), i) # observed cluster-level covariate
+    
+    u_jk <- rep(rnorm(j, 0, sqrt(icc2)), i) # cluster-level residual
+    
+    X_ijk <- rnorm(i*j, -0.1*Z_k[k.], 1) # observed unit-level covariate
+    
+    U_ijk <- rnorm(i*j, -0.2*Z_k[k.], 1)  # unobserved unit-level covariate
+    
+    
+    
+    tmp <- cbind(school_id, rep(Z_k[k.], i*j), rep(r_k[k.], i*j), W_jk, u_jk, X_ijk, U_ijk)
+    
+    tmp <- tmp[order(W_jk, u_jk),]
+    
+    hold <- rbind(hold, tmp)
+    
+    
+    
+  }
+  
+  dat <- as.data.frame(hold)
+  names(dat) <- c("school_id", "Z_k", "r_k", "W_jk", "u_jk", "X_ijk", "U_ijk")
+  dat$teacher_id <- rep(1:(total_teachers), each = i)
+  dat$student_id <- 1:N
+  dat$school_id <- rep(1:k, each = N/k)
 
-  # map(dat, ~ sum(is.na(.))) # check na 
 
   # design matrix -----------------------------------------------------------
   design_mat <- 

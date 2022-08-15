@@ -33,19 +33,19 @@ generate_data
 ```{r}
 # memory exhaustion if I try to make all of these large 
 # for checking the distributions - need to increased the numbers here
-k <- 1000 #schools
-j <-20  # teachers 
-i <- 10 # students
+k <- 50 #schools
+j <- 8  # teachers 
+i <- 20 # students
 
 icc3 <- 0.05  # icc for school 
 icc2 <- 0.20 # icc for teachers
 R2 <- .40
 
 
-ps_coef <- matrix(c(.07, 0.8, -0.25, 0.6, -0.4, 1, 1))  #what values for pi 6 and 7 in the notes?
+ps_coef <- matrix(c(-1.25, 1, .25, 1.5, 1.5, .20, .20))  #what values for pi 6 and 7 in the notes?
 pr_star <- .5
 
-outcome_coef <- matrix(c(1, 0.3, .5, .4, -0.2, 1, 1))
+outcome_coef <- matrix(c(1, 0.3, 0.1, 0.1, 0.5, 0.4, 0.1, 0.1, -0.2, 1, 1))
 
 delta <- -0.4
 ```
@@ -85,6 +85,12 @@ map(example_dat, ~ sum(is.na(.)))
 # proportion depends on the value of the intercept in ps model
 # so not sure what pr_star is doing
 prop.table(table(example_dat$D))
+```
+
+## Correlations
+
+```{r}
+cor(example_dat %>% select(Z_k, W_jk, X_ijk, U_ijk))
 ```
 
 
@@ -154,14 +160,7 @@ out_mod <- lmer(Y_ijk ~ D  + X_ijk + W_jk + Z_k +
 summary(out_mod)
 ```
 
-Compare to the coefficients used in data gen:
 
-```{r}
-tibble(vars = c("intercept", "X_ijk", "U_ijk", 'W_jk', "Z_k", "r_k", "u_jk"),
-         params = as.vector(outcome_coef))
-
-delta
-```
 
 
 ### ICC 
