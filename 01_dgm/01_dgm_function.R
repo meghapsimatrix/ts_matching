@@ -40,22 +40,17 @@ generate_data <- function(k, # schools
   
   for(k. in 1:k) {
     
-    school_id <- rep(k., i*j)
-    
-    W_jk <- rep(rnorm(j, -0.2*Z_k[k.], 1), i) # observed cluster-level covariate
-    
+    school_id <- rep(k., i * j)
+    W_jk <- rep(rnorm(j, -0.2 * Z_k[k.], 1), i) # observed cluster-level covariate
     u_jk <- rep(rnorm(j, 0, sqrt(icc2)), i) # cluster-level residual
-    
-    X_ijk <- rnorm(i*j, -0.1*Z_k[k.], 1) # observed unit-level covariate
-    
-    U_ijk <- rnorm(i*j, -0.2*Z_k[k.], 1)  # unobserved unit-level covariate
+    X_ijk <- rnorm(i * j, -0.25 * Z_k[k.] + -0.20 * r_k[k.], 1) # observed unit-level covariate
+    U_ijk <- rnorm(i * j, -0.25 * Z_k[k.], 1)  # unobserved unit-level covariate 
     
     
-    
-    tmp <- cbind(school_id, rep(Z_k[k.], i*j), rep(r_k[k.], i*j), W_jk, u_jk, X_ijk, U_ijk)
-    
+    tmp <- cbind(school_id, rep(Z_k[k.], i * j), 
+                 rep(r_k[k.], i * j), 
+                 W_jk, u_jk, X_ijk, U_ijk)
     tmp <- tmp[order(W_jk, u_jk),]
-    
     hold <- rbind(hold, tmp)
     
     
