@@ -498,7 +498,8 @@ estimate_effect <- function(matched_dat,
                             outcome_formula = "Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + 
                               (1 | teacher_id) + (1 | school_id)",
                             method,
-                            n_t_all) {
+                            n_t_all,
+                            n_t_stud_all) {
   
   if(nrow(matched_dat) == 0){
     
@@ -543,7 +544,8 @@ estimate_effect <- function(matched_dat,
   results <- bind_cols(results, bal_res) %>%
     left_join(ci, by = "term") %>%
     select(method, U_ijk:Z_k, estimate:p_value, ci_low, ci_high) %>%
-    mutate(prop_t = sum(teacher_level_dat$D) / n_t_all)  # is this correct for all methods?
+    mutate(prop_t = sum(teacher_level_dat$D) / n_t_all,
+           prop_t_stud = sum(matched_dat$D)/ n_t_stud_all)  # is this correct for all methods?
   
   }
   

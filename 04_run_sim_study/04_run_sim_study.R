@@ -37,7 +37,7 @@ run_sim <- function(iterations,
                     ps_coef = matrix(c(-1.25, 1, .25, 1.5, 1.5, .20, .20)), 
                     pr_star = .5, 
                     outcome_coef = matrix(c(1, 0.3, 0.1, 0.1, 0.5, 0.4, 0.1, 0.1, -0.2, 1, 1)), 
-                    delta = -0.4,
+                    delta = 0.2,
                     seed = NULL) {
   
   if (!is.null(seed)) set.seed(seed)
@@ -255,7 +255,8 @@ run_sim <- function(iterations,
                                                 rep("Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + (1 | teacher_id) + (1 | school_id)", 13)),
                             method = c("0.1", "0.2", "1", "2", "3", "4", "5", "6",
                                        "7", "8", "9", "10", "11", "12"),
-                            n_t_all = sum(cluster_level_dat$D))
+                            n_t_all = sum(cluster_level_dat$D),
+                            n_t_stud_all = sum(dat$D))
      
     pmap_dfr(matched_sets, estimate_effect) %>%
       mutate(true_effect = delta)
