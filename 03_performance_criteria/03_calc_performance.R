@@ -37,7 +37,7 @@ calc_performance <- function(results) {
     results %>%
     group_by(method) %>%
     summarize(prop_t_m = mean(prop_t, na.rm = TRUE),
-              prop_t_stud_m = mean(prop_t_stud)) %>%
+              prop_t_stud_m = mean(prop_t_stud, na.rm = TRUE)) %>%
     ungroup()
   
   performance_measures <- left_join(abs_criteria, ci_cov, by = "method") %>%
