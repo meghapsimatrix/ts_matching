@@ -21,6 +21,8 @@ results_clean <-
          icc = paste("icc3 = ", icc3, ",", "icc2 = ", icc2))
 
 
+# bias --------------------------------------------------------------------
+
 ggplot(results_clean, aes(x = method, y = bias, color = method)) + 
   geom_point() +
   facet_grid(k_j ~ icc) +
@@ -29,3 +31,56 @@ ggplot(results_clean, aes(x = method, y = bias, color = method)) +
   guides(color = "none")
 
 ggsave("results/prelim_graph_bias.png", device = "png", width = 12, height = 8)
+
+
+# rmse --------------------------------------------------------------------
+
+ggplot(results_clean, aes(x = method, y = rmse, color = method)) + 
+  geom_point() +
+  facet_grid(k_j ~ icc) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  theme_bw() +
+  guides(color = "none")
+
+ggsave("results/prelim_graph_mcse.png", device = "png", width = 12, height = 8)
+
+# proportion  ---------------------------------------------------------------
+
+ggplot(results_clean, aes(x = method, y = prop_t_m, color = method)) + 
+  geom_point() +
+  facet_grid(k_j ~ icc) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  theme_bw() +
+  guides(color = "none")
+
+ggsave("results/prelim_graph_prop_t_m.png", device = "png", width = 12, height = 8)
+
+# proportion  ---------------------------------------------------------------
+
+ggplot(results_clean, aes(x = method, y = prop_t_stud_m, color = method)) + 
+  geom_point() +
+  facet_grid(k_j ~ icc) +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  theme_bw() +
+  guides(color = "none")
+
+ggsave("results/prelim_graph_prop_t_stud_m.png", device = "png", width = 12, height = 8)
+
+
+# balance -----------------------------------------------------------------
+
+bal_res <- 
+  results_clean %>%
+  select(method, k_j, icc, U_ijk:Z_k) %>%
+  gather(var, smd, U_ijk:Z_k)
+
+bal_res %>%
+  ggplot(aes(y = var, x = smd, color = method)) +
+  geom_point() +
+  geom_vline(xintercept = 0) +
+  geom_vline(xintercept = c(-.1, .1), linetype = "dashed") +
+  scale_y_discrete(limits = rev(levels(var))) +
+  facet_grid(k_j ~ icc) +
+  labs(x = "Standardized Mean Differences", y = "") +
+  ggtitle("Covariate Balance") + 
+  theme_bw()
