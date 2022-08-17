@@ -1,5 +1,21 @@
 library(tidyverse)
 
+# # Load results ------------------------------------------------------------
+# load("simulation_code/sim_code_study_1/data/to_test.RData")
+# 
+# files <- list.files("results/results_study_1", full.names = TRUE)
+# 
+# all_files <- c(files, files_james)
+# 
+# load_res <- function(file) {
+#   
+#   load(file)
+#   results
+#   
+# }
+# 
+# results <- map_dfr(all_files, load_res)
+
 load("results/simulation_results_mj_1.RData")
 results_mj_1 <- results
 
