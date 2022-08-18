@@ -1,32 +1,30 @@
 library(tidyverse)
 
-# # Load results ------------------------------------------------------------
-# load("simulation_code/sim_code_study_1/data/to_test.RData")
-# 
-# files <- list.files("results/results_study_1", full.names = TRUE)
-# 
-# all_files <- c(files, files_james)
-# 
-# load_res <- function(file) {
-#   
-#   load(file)
-#   results
-#   
-# }
-# 
-# results <- map_dfr(all_files, load_res)
+# Load results ------------------------------------------------------------
 
-load("results/simulation_results_mj_1.RData")
-results_mj_1 <- results
+files <- list.files("results/results", full.names = TRUE)
+files
 
-load("results/simulation_results_mc1.RData")
-results_mc_1 <- results
+load_res <- function(file) {
 
-results_clean <- bind_rows(results_mj_1, results_mc_1) %>%
+  load(file)
+  results
+
+}
+
+results <- map_dfr(files, load_res)
+
+
+# clean results  ----------------------------------------------------------
+
+K <- 200 * length(files)
+
+results_clean <- 
+  results %>%
   group_by(method, k, j, icc3, icc2) %>%
   summarize_at(vars(bias:prop_t_stud_m), mean) %>%
   ungroup() %>%
-  mutate(K = 400)
+  mutate(K = K)
 
 
 results_clean <- 
@@ -36,6 +34,9 @@ results_clean <-
   mutate(k_j = paste("k = ", k, ",", "j = ", j),
          icc = paste("icc3 = ", icc3, ",", "icc2 = ", icc2))
 
+
+
+# preliminary graphs ------------------------------------------------------
 
 # bias --------------------------------------------------------------------
 
@@ -85,6 +86,8 @@ ggsave("results/prelim_graph_prop_t_stud_m.png", device = "png", width = 12, hei
 
 # balance -----------------------------------------------------------------
 
+# need to figure out how to graph this better
+
 bal_res <- 
   results_clean %>%
   select(method, k_j, icc, U_ijk:Z_k) %>%
@@ -100,3 +103,4 @@ bal_res %>%
   labs(x = "Standardized Mean Differences", y = "") +
   ggtitle("Covariate Balance") + 
   theme_bw()
+
