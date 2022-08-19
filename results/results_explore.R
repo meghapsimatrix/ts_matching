@@ -30,9 +30,19 @@ results_clean <-
 results_clean <- 
   results_clean %>%
   mutate(method = as.character(method)) %>%
-  mutate(method = factor(method, levels = c("0.1", "0.2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"))) %>%
-  mutate(k_j = paste("k = ", k, ",", "j = ", j),
-         icc = paste("icc3 = ", icc3, ",", "icc2 = ", icc2))
+  filter(!(method %in% c("0.1", "0.2"))) %>%
+  mutate(method = factor(method, levels = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"))) %>%
+  mutate(k_j = paste0("k = ", k, ", ", "j = ", j),
+         icc = paste("icc3 = ", icc3, ", ", "icc2 = ", icc2)) %>%
+  mutate(matching_priority = fct_collapse(method,
+                                          "No Distinction" = c("1", "2", "3"),
+                                          "Within-site Matching" = c("4", "5", "6"),
+                                          "Within-group Matching" = c("7", "8", "9"),
+                                          "Within-site then -group Matching" = c("10", "11", "12")),
+         matching_level = fct_collapse(method,
+                                       "Units only" = c("1", "4", "7", "10"),
+                                       "Clusters only" = c("2", "5", "8", "11"),
+                                       "Units & Clusters" = c("3", "6", "9", "12")))
 
 
 
@@ -40,48 +50,71 @@ results_clean <-
 
 # bias --------------------------------------------------------------------
 
-ggplot(results_clean, aes(x = method, y = bias, color = method)) + 
+# break off into sections
+ggplot(results_clean, aes(x = method, 
+                          y = bias, 
+                          shape = matching_level, 
+                          color = matching_priority)) + 
   geom_point() +
   facet_grid(k_j ~ icc) +
   geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_color_brewer(palette = "Dark2") +
   theme_bw() +
-  guides(color = "none")
+  ggtitle("Bias") +
+  theme(legend.position = "bottom")
 
-ggsave("results/prelim_graph_bias.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/prelim_graph_bias.png", device = "png", width = 12, height = 8)
 
 
 # rmse --------------------------------------------------------------------
 
-ggplot(results_clean, aes(x = method, y = rmse, color = method)) + 
+ggplot(results_clean, aes(x = method, 
+                          y = rmse, 
+                          shape = matching_level, 
+                          color = matching_priority)) + 
   geom_point() +
   facet_grid(k_j ~ icc) +
   geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_color_brewer(palette = "Dark2") +
   theme_bw() +
-  guides(color = "none")
+  ggtitle("RMSE") +
+  theme(legend.position = "bottom")
 
-ggsave("results/prelim_graph_mcse.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/prelim_graph_rmse.png", device = "png", width = 12, height = 8)
 
 # proportion  ---------------------------------------------------------------
 
-ggplot(results_clean, aes(x = method, y = prop_t_m, color = method)) + 
+ggplot(results_clean, aes(x = method, 
+                          y = prop_t_m, 
+                          shape = matching_level, 
+                          color = matching_priority)) + 
   geom_point() +
   facet_grid(k_j ~ icc) +
-  geom_hline(yintercept = 1, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_color_brewer(palette = "Dark2") +
   theme_bw() +
-  guides(color = "none")
+  ggtitle("Proportion Treatment Teachers Matched") +
+  theme(legend.position = "bottom")
 
-ggsave("results/prelim_graph_prop_t_m.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/prelim_graph_prop_t_m.png", device = "png", width = 12, height = 8)
+
+
 
 # proportion  ---------------------------------------------------------------
 
-ggplot(results_clean, aes(x = method, y = prop_t_stud_m, color = method)) + 
+ggplot(results_clean, aes(x = method, 
+                          y = prop_t_stud_m, 
+                          shape = matching_level, 
+                          color = matching_priority)) + 
   geom_point() +
   facet_grid(k_j ~ icc) +
-  geom_hline(yintercept = 1, linetype = "dashed") +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_color_brewer(palette = "Dark2") +
   theme_bw() +
-  guides(color = "none")
+  ggtitle("Proportion Treatment Teachers Matched - Student Level") +
+  theme(legend.position = "bottom")
 
-ggsave("results/prelim_graph_prop_t_stud_m.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/prelim_graph_prop_t_stud_m.png", device = "png", width = 12, height = 8)
 
 
 # balance -----------------------------------------------------------------
