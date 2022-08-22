@@ -56,6 +56,14 @@ ggplot(results_clean, aes(x = method,
                           shape = matching_level, 
                           color = matching_priority)) + 
   geom_point() +
+  annotate("rect",
+           xmin = 0, xmax = 3.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
+  annotate("rect",
+           xmin = 6.5, xmax = 9.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
   facet_grid(k_j ~ icc) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
@@ -73,6 +81,14 @@ ggplot(results_clean, aes(x = method,
                           shape = matching_level, 
                           color = matching_priority)) + 
   geom_point() +
+  annotate("rect",
+           xmin = 0, xmax = 3.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
+  annotate("rect",
+           xmin = 6.5, xmax = 9.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
   facet_grid(k_j ~ icc) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
@@ -89,12 +105,21 @@ ggplot(results_clean, aes(x = method,
                           shape = matching_level, 
                           color = matching_priority)) + 
   geom_point() +
+  annotate("rect",
+           xmin = 0, xmax = 3.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
+  annotate("rect",
+           xmin = 6.5, xmax = 9.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
   facet_grid(k_j ~ icc) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
   ggtitle("Proportion Treatment Teachers Matched") +
   theme(legend.position = "bottom")
+
 
 ggsave("results/graphs/prelim_graph_prop_t_m.png", device = "png", width = 12, height = 8)
 
@@ -107,6 +132,14 @@ ggplot(results_clean, aes(x = method,
                           shape = matching_level, 
                           color = matching_priority)) + 
   geom_point() +
+  annotate("rect",
+           xmin = 0, xmax = 3.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
+  annotate("rect",
+           xmin = 6.5, xmax = 9.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
   facet_grid(k_j ~ icc) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
