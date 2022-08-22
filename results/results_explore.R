@@ -42,7 +42,7 @@ results_clean <-
          matching_level = fct_collapse(method,
                                        "Units only" = c("1", "4", "7", "10"),
                                        "Clusters only" = c("2", "5", "8", "11"),
-                                       "Units & Clusters" = c("3", "6", "9", "12")))
+                                       "Units & Clusters" = c("3", "6", "9", "12"))) 
 
 
 
@@ -74,6 +74,14 @@ ggplot(results_clean, aes(x = method,
 ggsave("results/graphs/prelim_graph_bias.png", device = "png", width = 12, height = 8)
 
 
+# check_mcse 
+# fairly small compared to bias
+# do we want to include mcse in graph somehow? Like ci dot and line plot?
+results_clean %>%
+  group_by(method) %>%
+  summarize(bias_mcse = max(bias_mcse)) %>%
+  arrange(desc(bias_mcse))
+
 # rmse --------------------------------------------------------------------
 
 ggplot(results_clean, aes(x = method, 
@@ -97,6 +105,13 @@ ggplot(results_clean, aes(x = method,
   theme(legend.position = "bottom")
 
 ggsave("results/graphs/prelim_graph_rmse.png", device = "png", width = 12, height = 8)
+
+# check_mcse 
+# fairly small compared to rmse 
+results_clean %>%
+  group_by(method) %>%
+  summarize(rmse_mcse = max(rmse_mcse)) %>%
+  arrange(desc(rmse_mcse))
 
 # proportion  ---------------------------------------------------------------
 
