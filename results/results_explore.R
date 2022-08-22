@@ -69,6 +69,7 @@ ggplot(results_clean, aes(x = method,
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
   ggtitle("Bias") +
+  labs(shape = "", color = "", x = "Method", y = "Bias") +
   theme(legend.position = "bottom")
 
 ggsave("results/graphs/prelim_graph_bias.png", device = "png", width = 12, height = 8)
@@ -102,6 +103,7 @@ ggplot(results_clean, aes(x = method,
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
   ggtitle("RMSE") +
+  labs(shape = "", color = "", x = "Method", y = "RMSE") +
   theme(legend.position = "bottom")
 
 ggsave("results/graphs/prelim_graph_rmse.png", device = "png", width = 12, height = 8)
@@ -133,6 +135,7 @@ ggplot(results_clean, aes(x = method,
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
   ggtitle("Proportion Treatment Teachers Matched") +
+  labs(shape = "", color = "", x = "Method", y = "Proportion of Treated Teachers Matched") +
   theme(legend.position = "bottom")
 
 
@@ -160,6 +163,7 @@ ggplot(results_clean, aes(x = method,
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
   ggtitle("Proportion Treatment Teachers Matched - Student Level") +
+  labs(shape = "", color = "", x = "Method", y = "Proportion of Treated Students Matched") +
   theme(legend.position = "bottom")
 
 ggsave("results/graphs/prelim_graph_prop_t_stud_m.png", device = "png", width = 12, height = 8)
