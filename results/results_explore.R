@@ -77,7 +77,7 @@ ggsave("results/graphs/prelim_graph_bias.png", device = "png", width = 12, heigh
 
 # check_mcse 
 # fairly small compared to bias
-# do we want to include mcse in graph somehow? Like ci dot and line plot?
+# do we want to include mcse in graph somehow? Like ci dot and line plot? - but it might now show bc the mcse is quite small
 results_clean %>%
   group_by(method) %>%
   summarize(bias_mcse = max(bias_mcse)) %>%
