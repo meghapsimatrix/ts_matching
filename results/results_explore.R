@@ -131,7 +131,7 @@ ggplot(results_clean, aes(x = method,
            ymin = -Inf, ymax = Inf,
            fill = "blue", alpha = .2) +
   facet_grid(k_j ~ icc) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 1, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
   ggtitle("Proportion Treatment Teachers Matched") +
@@ -159,7 +159,7 @@ ggplot(results_clean, aes(x = method,
            ymin = -Inf, ymax = Inf,
            fill = "blue", alpha = .2) +
   facet_grid(k_j ~ icc) +
-  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_hline(yintercept = 1, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
   ggtitle("Proportion Treatment Teachers Matched - Student Level") +
