@@ -64,7 +64,7 @@ ggplot(results_clean, aes(x = method,
            xmin = 6.5, xmax = 9.5,
            ymin = -Inf, ymax = Inf,
            fill = "blue", alpha = .2) +
-  facet_grid(k_j ~ icc) +
+  facet_grid(icc ~ k_j) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
@@ -98,7 +98,7 @@ ggplot(results_clean, aes(x = method,
            xmin = 6.5, xmax = 9.5,
            ymin = -Inf, ymax = Inf,
            fill = "blue", alpha = .2) +
-  facet_grid(k_j ~ icc) +
+  facet_grid(icc ~ k_j) +
   geom_hline(yintercept = 0, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
@@ -130,7 +130,7 @@ ggplot(results_clean, aes(x = method,
            xmin = 6.5, xmax = 9.5,
            ymin = -Inf, ymax = Inf,
            fill = "blue", alpha = .2) +
-  facet_grid(k_j ~ icc) +
+  facet_grid(icc~ k_j) +
   geom_hline(yintercept = 1, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
@@ -158,7 +158,7 @@ ggplot(results_clean, aes(x = method,
            xmin = 6.5, xmax = 9.5,
            ymin = -Inf, ymax = Inf,
            fill = "blue", alpha = .2) +
-  facet_grid(k_j ~ icc) +
+  facet_grid(icc ~ k_j) +
   geom_hline(yintercept = 1, linetype = "dashed") +
   scale_color_brewer(palette = "Dark2") +
   theme_bw() +
