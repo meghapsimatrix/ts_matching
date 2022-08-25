@@ -19,6 +19,8 @@ results <- map_dfr(files, load_res)
 
 K <- 200 * length(files)
 
+table(results$seed)
+
 results_clean <- 
   results %>%
   group_by(method, k, j, icc3, icc2) %>%
