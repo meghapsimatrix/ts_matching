@@ -184,10 +184,56 @@ bal_res %>%
   ggplot(aes(y = var, x = smd, color = method)) +
   geom_point() +
   geom_vline(xintercept = 0) +
-  geom_vline(xintercept = c(-.1, .1), linetype = "dashed") +
+  geom_vline(xintercept = c(-.25, .25), linetype = "dashed") +
   scale_y_discrete(limits = rev(levels(var))) +
-  facet_grid(k_j ~ icc) +
+  facet_grid(icc ~ k_j) +
   labs(x = "Standardized Mean Differences", y = "") +
   ggtitle("Covariate Balance") + 
   theme_bw()
 
+
+
+ggplot(results_clean, aes(x = method, 
+                          y = W_jk, 
+                          shape = matching_level, 
+                          color = matching_priority)) + 
+  geom_point() +
+  annotate("rect",
+           xmin = 0, xmax = 3.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
+  annotate("rect",
+           xmin = 6.5, xmax = 9.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
+  facet_grid(icc ~ k_j) +
+  geom_hline(yintercept = 0) +
+  geom_hline(yintercept = .25, linetype = "dashed") +
+  scale_color_brewer(palette = "Dark2") +
+  theme_bw() +
+  ggtitle("W_jk") +
+  labs(shape = "", color = "", x = "Method", y = "SMD") +
+  theme(legend.position = "bottom")
+
+
+ggplot(results_clean, aes(x = method, 
+                          y = X_jk, 
+                          shape = matching_level, 
+                          color = matching_priority)) + 
+  geom_point() +
+  annotate("rect",
+           xmin = 0, xmax = 3.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
+  annotate("rect",
+           xmin = 6.5, xmax = 9.5,
+           ymin = -Inf, ymax = Inf,
+           fill = "blue", alpha = .2) +
+  facet_grid(icc ~ k_j) +
+  geom_hline(yintercept = 0) +
+  geom_hline(yintercept = .25, linetype = "dashed") +
+  scale_color_brewer(palette = "Dark2") +
+  theme_bw() +
+  ggtitle("X_jk") +
+  labs(shape = "", color = "", x = "Method", y = "SMD") +
+  theme(legend.position = "bottom")
