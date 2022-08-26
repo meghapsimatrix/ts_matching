@@ -57,13 +57,14 @@ make_plot <- function(dat,
                       title,
                       y_label, 
                       yint = 0,
-                      type_line = "dashed"){
+                      type_line = "dashed",
+                      dot_size = 2){
   
   ggplot(dat, aes(x = method, 
                   y = outcome, 
                   shape = matching_level, 
                   color = matching_priority)) + 
-    geom_point() +
+    geom_point(size = dot_size) +
     annotate("rect",
              xmin = 0, xmax = 3.5,
              ymin = -Inf, ymax = Inf,
@@ -98,7 +99,8 @@ ggsave("results/graphs/full_graph_bias.png", device = "png", width = 12, height 
 
 make_plot(dat = zoom_results %>% mutate(outcome = bias), 
           title = "Bias",
-          y_label = "Bias")
+          y_label = "Bias",
+          dot_size = 3) 
 
 ggsave("results/graphs/zoom_graph_bias.png", device = "png", width = 12, height = 8)
 
@@ -122,7 +124,8 @@ ggsave("results/graphs/full_graph_rmse.png", device = "png", width = 12, height 
 
 make_plot(dat = zoom_results %>% mutate(outcome = rmse), 
           title = "RMSE",
-          y_label = "RMSE")
+          y_label = "RMSE",
+          dot_size = 3)
 
 ggsave("results/graphs/zoom_graph_rmse.png", device = "png", width = 12, height = 8)
 
@@ -147,7 +150,8 @@ ggsave("results/graphs/full_graph_prop_t_m.png", device = "png", width = 12, hei
 make_plot(dat = zoom_results %>% mutate(outcome = prop_t_m), 
           title = "Proportion of Treated Teachers Matched",
           y_label = "Proportion of Treated Teachers Matched",
-          yint = 1)
+          yint = 1,
+          dot_size = 3)
 
 ggsave("results/graphs/zoom_graph_prop_t_m.png", device = "png", width = 12, height = 8)
 
@@ -165,7 +169,8 @@ ggsave("results/graphs/full_graph_prop_t_stud_m.png", device = "png", width = 12
 make_plot(dat = zoom_results %>% mutate(outcome = prop_t_stud_m), 
           title = "Proportion of Treated Students Matched",
           y_label = "Proportion of Treated Students Matched",
-          yint = 1)
+          yint = 1,
+          dot_size = 3)
 
 ggsave("results/graphs/zoom_graph_prop_t_stud_m.png", device = "png", width = 12, height = 8)
 
@@ -185,7 +190,8 @@ ggsave("results/graphs/full_graph_smd_W_jk.png", device = "png", width = 12, hei
 make_plot(dat = zoom_results %>% mutate(outcome = W_jk), 
           title = "SMD for W_jk",
           y_label = "Standardized Mean Difference",
-          type_line = "solid") +
+          type_line = "solid",
+          dot_size = 3) +
   geom_hline(yintercept = .25, linetype = "dashed")
 
 ggsave("results/graphs/zoom_graph_smd_W_jk.png", device = "png", width = 12, height = 8)
@@ -204,7 +210,8 @@ ggsave("results/graphs/full_graph_smd_X_jk.png", device = "png", width = 12, hei
 make_plot(dat = zoom_results %>% mutate(outcome = X_jk), 
           title = "SMD for X_jk",
           y_label = "Standardized Mean Difference",
-          type_line = "solid") +
+          type_line = "solid",
+          dot_size = 3) +
   geom_hline(yintercept = .25, linetype = "dashed")
 
 ggsave("results/graphs/zoom_graph_smd_X_jk.png", device = "png", width = 12, height = 8)
@@ -222,7 +229,8 @@ ggsave("results/graphs/full_graph_smd_X_ijk.png", device = "png", width = 12, he
 make_plot(dat = zoom_results %>% mutate(outcome = X_ijk), 
           title = "SMD for X_ijk",
           y_label = "Standardized Mean Difference",
-          type_line = "solid") +
+          type_line = "solid",
+          dot_size = 3) +
   geom_hline(yintercept = .25, linetype = "dashed")
 
 ggsave("results/graphs/zoom_graph_smd_X_ijk.png", device = "png", width = 12, height = 8)
@@ -239,7 +247,8 @@ ggsave("results/graphs/full_graph_smd_Z_k.png", device = "png", width = 12, heig
 make_plot(dat = zoom_results %>% mutate(outcome = Z_k), 
           title = "SMD for Z_k",
           y_label = "Standardized Mean Difference",
-          type_line = "solid") +
+          type_line = "solid",
+          dot_size = 3) +
   geom_hline(yintercept = .25, linetype = "dashed")
 
 ggsave("results/graphs/zoom_graph_smd_Z_k.png", device = "png", width = 12, height = 8)
@@ -257,7 +266,8 @@ ggsave("results/graphs/full_graph_smd_U_ijk.png", device = "png", width = 12, he
 make_plot(dat = zoom_results %>% mutate(outcome =  U_ijk), 
           title = "SMD for  U_ijk",
           y_label = "Standardized Mean Difference",
-          type_line = "solid") +
+          type_line = "solid",
+          dot_size = 3) +
   geom_hline(yintercept = .25, linetype = "dashed")
 
 ggsave("results/graphs/zoom_graph_smd_U_ijk.png", device = "png", width = 12, height = 8)
