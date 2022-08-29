@@ -19,7 +19,11 @@ results <- map_dfr(files, load_res)
 
 K <- 200 * length(files)
 
-table(results$seed)
+# check if seeds are different
+results %>%
+  group_by(seed) %>%
+  count() %>%
+  filter(n !=14)
 
 results_clean <- 
   results %>%
