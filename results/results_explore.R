@@ -51,6 +51,9 @@ results_clean <-
                                        "Units & Clusters" = c("3", "6", "9", "12"))) 
 
 
+save(results_clean, file = "results/results/results_clean.RData")
+
+
 zoom_results <- results_clean %>% 
   filter(k == 20, icc3 == icc2)
 
