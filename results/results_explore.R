@@ -62,9 +62,10 @@ make_plot <- function(dat,
                       y_label, 
                       yint = 0,
                       type_line = "dashed",
-                      dot_size = 2){
+                      dot_size = 2,
+                      text = "large"){
   
-  ggplot(dat, aes(x = method, 
+  p <- ggplot(dat, aes(x = method, 
                   y = outcome, 
                   shape = matching_level, 
                   color = matching_priority)) + 
@@ -85,6 +86,18 @@ make_plot <- function(dat,
     labs(shape = "", color = "", x = "Method", y = y_label) +
     theme(legend.position = "bottom")
   
+  if(text == "large"){
+    
+    p <- p  +
+      theme(strip.text.x = element_text(size = 12),
+                   strip.text.y = element_text(size = 12),
+                   axis.title.x = element_text(size = 12),
+                   axis.title.y = element_text(size = 12),
+                   legend.text = element_text(size = 12),
+                   plot.title = element_text(size = 14, face = "bold"))
+  }
+  
+  return(p)
 }
 
 
@@ -129,7 +142,7 @@ ggsave("results/graphs/full_graph_rmse.png", device = "png", width = 12, height 
 make_plot(dat = zoom_results %>% mutate(outcome = rmse), 
           title = "RMSE",
           y_label = "RMSE",
-          dot_size = 3)
+          dot_size = 3) 
 
 ggsave("results/graphs/zoom_graph_rmse.png", device = "png", width = 12, height = 8)
 
@@ -174,7 +187,7 @@ make_plot(dat = zoom_results %>% mutate(outcome = prop_t_stud_m),
           title = "Proportion of Treated Students Matched",
           y_label = "Proportion of Treated Students Matched",
           yint = 1,
-          dot_size = 3)
+          dot_size = 3) 
 
 ggsave("results/graphs/zoom_graph_prop_t_stud_m.png", device = "png", width = 12, height = 8)
 
@@ -196,7 +209,7 @@ make_plot(dat = zoom_results %>% mutate(outcome = W_jk),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
-  geom_hline(yintercept = .25, linetype = "dashed")
+  geom_hline(yintercept = .25, linetype = "dashed") 
 
 ggsave("results/graphs/zoom_graph_smd_W_jk.png", device = "png", width = 12, height = 8)
 
@@ -235,7 +248,7 @@ make_plot(dat = zoom_results %>% mutate(outcome = X_ijk),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
-  geom_hline(yintercept = .25, linetype = "dashed")
+  geom_hline(yintercept = .25, linetype = "dashed") 
 
 ggsave("results/graphs/zoom_graph_smd_X_ijk.png", device = "png", width = 12, height = 8)
 
@@ -253,7 +266,7 @@ make_plot(dat = zoom_results %>% mutate(outcome = Z_k),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
-  geom_hline(yintercept = .25, linetype = "dashed")
+  geom_hline(yintercept = .25, linetype = "dashed") 
 
 ggsave("results/graphs/zoom_graph_smd_Z_k.png", device = "png", width = 12, height = 8)
 
@@ -272,7 +285,7 @@ make_plot(dat = zoom_results %>% mutate(outcome =  U_ijk),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
-  geom_hline(yintercept = .25, linetype = "dashed")
+  geom_hline(yintercept = .25, linetype = "dashed") 
 
 ggsave("results/graphs/zoom_graph_smd_U_ijk.png", device = "png", width = 12, height = 8)
 
