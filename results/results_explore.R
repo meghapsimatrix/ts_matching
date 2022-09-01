@@ -93,7 +93,7 @@ make_plot <- function(dat,
                    strip.text.y = element_text(size = 12),
                    axis.title.x = element_text(size = 12),
                    axis.title.y = element_text(size = 12),
-                   legend.text = element_text(size = 12),
+                   legend.text = element_text(size = 10),
                    plot.title = element_text(size = 14, face = "bold"))
   }
   
