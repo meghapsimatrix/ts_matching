@@ -3,7 +3,7 @@ library(tidyverse)
 # Load results ------------------------------------------------------------
 
 files <- list.files("results/results", full.names = TRUE)
-files
+files[-1]
 
 load_res <- function(file) {
 
@@ -12,7 +12,9 @@ load_res <- function(file) {
 
 }
 
+
 results <- map_dfr(files, load_res)
+
 
 
 # clean results  ----------------------------------------------------------
@@ -32,6 +34,10 @@ results_clean <-
   ungroup() %>%
   mutate(K = K)
 
+
+results_clean %>%
+  group_by(method) %>%
+  summarize(bias = mean(bias))
 
 results_clean <- 
   results_clean %>%
