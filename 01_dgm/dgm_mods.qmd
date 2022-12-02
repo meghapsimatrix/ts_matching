@@ -1,0 +1,24 @@
+---
+title: "ps and outcome model"
+author: "megha"
+format: pdf
+editor: visual
+---
+
+## Propensity Score DGM
+
+$$
+log(\frac{p_{jk}}{1 - p_{jk}}) = 1 + X_{jk} + A_{jk} + B_{jk} + U_jk + X_{jk}^2 + A_{jk}^2 + X_{jk} A_{jk} + W_{jk} + C_{jk} + L_{jk} + L_{jk}^2 + 
+$$
+
+$$
+W_{jk} X_{jk} + C_{jk} W_{jk} + Z_k + G_k + H_k + Z_{k} X_{jk} + r_k + u_{jk} 
+$$
+
+Outcome DGM
+
+I don't think I added the other covariates that I created. Probably should :D
+
+$$
+Y0_{ijk} = 1 + X_{ijk} + X_{ijk}^2 + X_{ijk}^3 + U_ijk + W_jk + W_{jk}^2 + W_{jk}^3 + Z_k + X_{ijk} W_{jk} + X_{ijk} A_{ijk} + r_k + u{jk}
+$$
