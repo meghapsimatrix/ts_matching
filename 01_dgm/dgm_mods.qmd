@@ -15,7 +15,7 @@ $$
 W_{jk} X_{jk} + C_{jk} W_{jk} + Z_k + G_k + H_k + Z_{k} X_{jk} + r_k + u_{jk} 
 $$
 
-Outcome DGM
+## Outcome DGM
 
 I don't think I added the other covariates that I created. Probably should :D
 
