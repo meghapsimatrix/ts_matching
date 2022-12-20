@@ -45,14 +45,14 @@ generate_data <- function(k, # schools
     # cluster level 
     school_id <- rep(k., i * j)
     W_jk <- rep(rnorm(j, -0.2 * Z_k[k.], 1), i) # observed cluster-level covariate
-    C_jk <- rep(rnorm(j, -0.2 * Z_k[k.], 1), i) # do we need to change the #'s here
-    L_jk <- rep(rnorm(j, -0.2 * Z_k[k.], 1), i)
+    C_jk <- rep(rnorm(j, -0.4 * Z_k[k.], 1), i) # do we need to change the #'s here
+    L_jk <- rep(rnorm(j, -0.5 * Z_k[k.], 1), i)
     u_jk <- rep(rnorm(j, 0, sqrt(icc2)), i) # cluster-level residual
     
     # student level
-    X_ijk <- rnorm(i * j, -0.25 * Z_k[k.] + -0.20 * r_k[k.], 1) # observed unit-level covariate
-    A_ijk <- rnorm(i * j, -0.25 * Z_k[k.] + -0.20 * r_k[k.], 1) # observed unit-level covariate
-    B_ijk <- rnorm(i * j, -0.25 * Z_k[k.] + -0.20 * r_k[k.], 1) # observed unit-level covariate
+    X_ijk <- rnorm(i * j, -0.45 * Z_k[k.] + -0.20 * r_k[k.], 1) # observed unit-level covariate
+    A_ijk <- rnorm(i * j, -0.25 * Z_k[k.] + -0.40 * r_k[k.], 1) # observed unit-level covariate
+    B_ijk <- rnorm(i * j, -0.35 * Z_k[k.] + -0.50 * r_k[k.], 1) # observed unit-level covariate
     U_ijk <- rnorm(i * j, -0.25 * Z_k[k.], 1)  # unobserved unit-level covariate 
     
     
