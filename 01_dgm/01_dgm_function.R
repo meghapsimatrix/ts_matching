@@ -52,7 +52,7 @@ generate_data <- function(k, # schools
     tmp <- cbind(school_id, 
                  rep(Z_k[k.], i * j), 
                  rep(r_k[k.], i * j), 
-                 W_jk, V_jk, L_jk, u_jk, 
+                 W_jk, V_jk, u_jk, 
                  X_ijk, U_ijk)
     tmp <- tmp[order(W_jk, u_jk),]
     hold <- rbind(hold, tmp)
@@ -80,7 +80,7 @@ generate_data <- function(k, # schools
            X_jk_2 = mean(X_ijk^2),
            W_jk_2 = W_jk ^ 2, 
            V_jk_2 = V_jk ^ 2,
-           X_W = mean(X_ijk * W_ijk),
+           X_W = mean(X_ijk * W_jk),
            V_W = V_jk * W_jk,
            Z_X = mean(Z_k * X_ijk)) %>%
     ungroup()
@@ -88,7 +88,7 @@ generate_data <- function(k, # schools
   X_ps <- design_mat %>%
     select(intercept, 
            X_jk, U_jk, X_jk_2, 
-           V_jk, W_jk, V_jk_2, W_jk_2, W_X, V_W, 
+           V_jk, W_jk, V_jk_2, W_jk_2, X_W, V_W, 
            Z_k, Z_X,
            r_k, u_jk) %>%
     distinct() %>%
@@ -107,7 +107,7 @@ generate_data <- function(k, # schools
 
   X_outcome <- 
     design_mat %>%
-    select(intercept, X_ijk, U_ijk, W_jk, Z_k, r_k, u_jk) %>%
+    select(intercept, X_ijk, U_ijk, W_jk, V_jk, Z_k, r_k, u_jk) %>%
     mutate(X_ijk_2 = X_ijk ^ 2, 
            X_ijk_3 = X_ijk ^ 3,
            W_jk_2 = W_jk ^ 2,
@@ -146,6 +146,10 @@ generate_data <- function(k, # schools
   
   
   dat$W_q5 <- cut(dat$W_jk, 5,
+                  labels = c(1, 2, 3, 4, 5),
+                  include.lowest = TRUE) 
+  
+  dat$V_q5 <- cut(dat$V_jk, 5,
                   labels = c(1, 2, 3, 4, 5),
                   include.lowest = TRUE) 
   

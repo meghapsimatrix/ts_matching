@@ -43,14 +43,13 @@ R2 <- .40
 
 
 ps_coef <- matrix(c(-.8, 1.2, .9, .8,
-                    1.2, 1.5, 1.1, 1.2, 
+                    1.2, 1.5, 1.1, 1.2, 1.5, 1.7,
+                    1.2, 1.2,
                     .8, .8))  #what values for pi 6 and 7 in the notes?
-pr_star <- .5
 
-outcome_coef <- matrix(c(1, 
-                         0.9, 3, 3.5, 3.5,
-                         0.4, 3.1, 3.1, 
-                         0.2, 3.5, 3.2, 
+outcome_coef <- matrix(c(1, 0.9, 1.2, 1.5, 1.5,
+                         .9, .7, 1.2, 1.5, 1.2, 1.3, 1.5,
+                         1.2, 
                          1, 1))
 
 delta <- -0.4
@@ -69,7 +68,6 @@ example_dat <- generate_data(k = k,
                              icc2 = icc2, 
                              R2 = R2,
                              ps_coef = ps_coef, 
-                             pr_star = pr_star, 
                              outcome_coef = outcome_coef, 
                              delta = delta)
 ```
@@ -96,7 +94,7 @@ prop.table(table(example_dat$D))
 ## Correlations
 
 ```{r}
-cor(example_dat %>% select(Z_k, W_jk, X_ijk, U_ijk))
+cor(example_dat %>% select(Z_k, W_jk, V_jk, X_ijk, U_ijk))
 ```
 
 
@@ -124,7 +122,7 @@ sd(school_cov_dat$Z_k)
 ```{r}
 teacher_cov_dat <- 
   example_dat %>%
-  select(teacher_id, W_jk) %>%
+  select(teacher_id, W_jk, V_jk) %>%
   distinct(.)
 
 ggplot(teacher_cov_dat, aes(x = W_jk)) +
@@ -133,6 +131,14 @@ ggplot(teacher_cov_dat, aes(x = W_jk)) +
 
 mean(teacher_cov_dat$W_jk)
 sd(teacher_cov_dat$W_jk)
+
+
+ggplot(teacher_cov_dat, aes(x = V_jk)) +
+  geom_density() + 
+  theme_minimal()
+
+mean(teacher_cov_dat$V_jk)
+sd(teacher_cov_dat$V_jk)
 ```
 
 ### Student level covariate
@@ -159,7 +165,7 @@ sd(example_dat$U_ijk)
 ### Coefficients
 
 ```{r}
-out_mod <- lmer(Y_ijk ~ D  + X_ijk + W_jk + Z_k + 
+out_mod <- lmer(Y_ijk ~ D  + X_ijk + V_jk + W_jk + Z_k + 
                     (1 | school_id/teacher_id),
                   data = example_dat)
 
