@@ -88,7 +88,7 @@ generate_data <- function(k, # schools
   X_ps <- design_mat %>%
     select(intercept, 
            X_jk, U_jk, X_jk_2, 
-           W_jk, V_jk, W_jk_2, V_jk_2, W_X, V_W, 
+           V_jk, W_jk, V_jk_2, W_jk_2, W_X, V_W, 
            Z_k, Z_X,
            r_k, u_jk) %>%
     distinct() %>%
@@ -116,8 +116,8 @@ generate_data <- function(k, # schools
            X_W = X_ijk * W_jk,
            V_W = V_jk * W_jk) %>%
     select(intercept, 
-           X_ijk, X_ijk_2, X_ijk_3, U_ijk, 
-           W_jk, W_jk_2, W_jk_3, V_jk^2, X_W, V_W,
+           X_ijk, U_ijk, X_ijk_2, X_ijk_3,  
+           V_jk, W_jk, V_jk_2, W_jk_2, W_jk_3, X_W, V_W,
            Z_k, 
            r_k, u_jk) %>%
     as.matrix()
