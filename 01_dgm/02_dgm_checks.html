@@ -1582,9 +1582,9 @@ ps_coef &lt;- matrix(c(-.8, 1.2, .9, .8,
                     1.2, 1.2,
                     .8, .8))  #what values for pi 6 and 7 in the notes?
 
-outcome_coef &lt;- matrix(c(1, 0.9, 1.2, 1.5, 1.5,
-                         .9, .7, 1.2, 1.5, 1.2, 1.3, 1.5,
-                         1.2, 
+outcome_coef &lt;- matrix(c(1, 0.6, .5, .2, .1,
+                         .4, .5, .1, .4, .2, .3, .2,
+                         -.2, 
                          1, 1))
 
 delta &lt;- -0.4</code></pre>
@@ -1756,35 +1756,35 @@ Params</h2>
 ## Formula: Y_ijk ~ D + X_ijk + V_jk + W_jk + Z_k + (1 | school_id/teacher_id)
 ##    Data: example_dat
 ## 
-## REML criterion at convergence: 13685.4
+## REML criterion at convergence: 10416.7
 ## 
 ## Scaled residuals: 
-##      Min       1Q   Median       3Q      Max 
-## -10.1353  -0.5401  -0.0733   0.4373  15.9398 
+##     Min      1Q  Median      3Q     Max 
+## -3.3870 -0.6426 -0.0274  0.5904 10.6832 
 ## 
 ## Random effects:
 ##  Groups               Name        Variance  Std.Dev. 
-##  teacher_id:school_id (Intercept) 1.512e-01 3.888e-01
-##  school_id            (Intercept) 1.081e-14 1.039e-07
-##  Residual                         2.855e-01 5.343e-01
+##  teacher_id:school_id (Intercept) 1.546e-01 3.931e-01
+##  school_id            (Intercept) 1.229e-09 3.506e-05
+##  Residual                         1.858e-01 4.310e-01
 ## Number of obs: 8000, groups:  teacher_id:school_id, 400; school_id, 50
 ## 
 ## Fixed effects:
 ##              Estimate Std. Error t value
-## (Intercept) -0.128158   0.036759  -3.486
-## D           -0.132907   0.044707  -2.973
-## X_ijk        0.572625   0.006078  94.213
-## V_jk         0.003024   0.021369   0.142
-## W_jk         0.369638   0.019443  19.012
-## Z_k          0.099703   0.023106   4.315
+## (Intercept) -0.099521   0.036578  -2.721
+## D           -0.107925   0.044487  -2.426
+## X_ijk        0.406557   0.004907  82.845
+## V_jk         0.129609   0.021263   6.095
+## W_jk         0.448984   0.019347  23.207
+## Z_k         -0.133965   0.022937  -5.841
 ## 
 ## Correlation of Fixed Effects:
 ##       (Intr) D      X_ijk  V_jk   W_jk  
 ## D     -0.826                            
 ## X_ijk -0.001  0.000                     
-## V_jk   0.074 -0.108 -0.002              
+## V_jk   0.074 -0.108 -0.001              
 ## W_jk   0.163 -0.177  0.001  0.021       
-## Z_k    0.004 -0.123  0.119  0.424  0.193
+## Z_k    0.004 -0.123  0.096  0.425  0.193
 ## optimizer (nloptwrap) convergence code: 0 (OK)
 ## boundary (singular) fit: see help(&#39;isSingular&#39;)</code></pre>
 </div>
@@ -1792,12 +1792,12 @@ Params</h2>
 <h3><span class="header-section-number">4.5.2</span> ICC</h3>
 <p>Breaking it down by group.</p>
 <pre class="r"><code>performance::icc(out_mod, by_group = TRUE)</code></pre>
-<pre><code>## Warning: Can&#39;t compute random effect variances. Some variance components equal
-##   zero. Your model may suffer from singularity (see &#39;?lme4::isSingular&#39;
-##   and &#39;?performance::check_singularity&#39;).
-##   Solution: Respecify random structure! You may also decrease the
-##   &#39;tolerance&#39; level to enforce the calculation of random effect variances.</code></pre>
-<pre><code>## [1] NA</code></pre>
+<pre><code>## # ICC by Group
+## 
+## Group                |       ICC
+## --------------------------------
+## teacher_id:school_id |     0.454
+## school_id            | 3.611e-09</code></pre>
 <p>The icc’s used in the dgm:</p>
 <pre class="r"><code>icc3 # school level </code></pre>
 <pre><code>## [1] 0.05</code></pre>
