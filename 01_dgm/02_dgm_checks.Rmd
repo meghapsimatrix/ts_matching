@@ -33,7 +33,7 @@ generate_data
 ```{r}
 # memory exhaustion if I try to make all of these large 
 # for checking the distributions - need to increased the numbers here
-k <- 50 #schools
+k <- 200 #schools
 j <- 8  # teachers 
 i <- 20 # students
 
@@ -42,7 +42,7 @@ icc2 <- 0.20 # icc for teachers
 R2 <- .40
 
 
-ps_coef <- matrix(c(-.8, 1.2, .9, .8,
+ps_coef <- matrix(c(-4, 1.2, .9, .8,
                     1.2, 1.5, 1.1, 1.2, 1.5, 1.7,
                     1.2, 1.2,
                     .8, .8))  #what values for pi 6 and 7 in the notes?
