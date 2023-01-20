@@ -33,7 +33,7 @@ generate_data
 ```{r}
 # memory exhaustion if I try to make all of these large 
 # for checking the distributions - need to increased the numbers here
-k <- 200 #schools
+k <- 20 #schools
 j <- 8  # teachers 
 i <- 20 # students
 
