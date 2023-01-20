@@ -34,16 +34,15 @@ run_sim <- function(iterations,
                     icc3, 
                     icc2, 
                     R2 = .40,
-                    ps_coef = matrix(c(-1.25, 1, .25, 1.2, 1.5,
-                                       1.2, .2, 1.5,
-                                       1.5, 1.2, 1,
-                                       .3, 1.1, .4,
-                                       1.3, .7, .5,
-                                       1.8,
-                                       .20, .20)),
+                    ps_coef = matrix(c(-4, 1.2, .9, .8,
+                                       1.2, 1.5, 1.1, 1.2, 1.5, 1.7,
+                                       1.2, 1.2,
+                                       .8, .8)),
                     pr_star = .5, 
-                    outcome_coef = matrix(c(1, 0.3, 0.1, 0.1, 1, 0.4, 0.5, 0.1, -0.3,
-                                            1.5, .8, 1, 1)), 
+                    outcome_coef = matrix(c(1, 0.6, .5, .2, .1,
+                                            .4, .5, .1, .4, .2, .3, .2,
+                                            -.2, 
+                                            1, 1)), 
                     delta = 0.2,
                     seed = NULL) {
   
@@ -61,7 +60,6 @@ run_sim <- function(iterations,
                            icc2 = icc2, 
                            R2 = R2,
                            ps_coef = ps_coef, 
-                           pr_star = pr_star, 
                            outcome_coef = outcome_coef, 
                            delta = delta)
       
@@ -91,11 +89,11 @@ run_sim <- function(iterations,
      # match -------------------------------------------------------------------
 
      m_1 <- match_them(dat = dat, 
-                       equation =  D ~ X_ijk + W_jk + Z_k,
+                       equation =  D ~ X_ijk + V_jk + W_jk + Z_k,
                        caliper = .25)
      
      m_2 <- match_them(dat = cluster_level_dat, 
-                       equation =  D ~ X_jk + W_jk + Z_k,
+                       equation =  D ~ X_jk + V_jk + W_jk + Z_k,
                        caliper = .25,
                        student_level = TRUE,
                        student_dat = dat)
@@ -103,18 +101,17 @@ run_sim <- function(iterations,
      m_3 <- multi_match(dat = dat,
                         trt = "D",
                         l1_cov = c("X_ijk"),
-                        l2_cov = c("W_q5", "Z_q5"),
+                        l2_cov = c("V_q5", "W_q5", "Z_q5"),
                         l2_id = "teacher_id",
                         caliper = .25)
      
-     # do we need to make school_id a factor or char?
      m_4 <- match_them(dat = dat, 
-                       equation =  D ~ X_ijk + W_jk + Z_k,
+                       equation =  D ~ X_ijk + V_jk + W_jk + Z_k,
                        caliper = 1,
                        exact = "school_id")
      
      m_5 <- match_them(dat = cluster_level_dat, 
-                       equation =  D ~ X_jk + W_jk + Z_k,
+                       equation =  D ~ X_jk + V_jk + W_jk + Z_k,
                        caliper = 1,
                        exact = "school_id",
                        student_level = TRUE,
@@ -132,13 +129,13 @@ run_sim <- function(iterations,
                              add_id = "school"))
      
      m_7 <- match_them(dat = dat, 
-                       equation =  D ~ X_ijk + W_jk + Z_k,
+                       equation =  D ~ X_ijk + V_jk + W_jk + Z_k,
                        caliper = 1,
                        exact = "Z_q5")  # quintile based on Z_k
      
      
      m_8 <- match_them(dat = cluster_level_dat, 
-                       equation =  D ~ X_jk + W_jk + Z_k,
+                       equation =  D ~ X_jk + V_jk + W_jk + Z_k,
                        caliper = 1,
                        exact = "Z_q5",  # quintile based on Z_k
                        student_level = TRUE,
@@ -150,7 +147,7 @@ run_sim <- function(iterations,
               do(multi_match(., 
                              trt = "D",
                              l1_cov = c("X_ijk"),
-                             l2_cov = c("W_q5", "Z_q5"),
+                             l2_cov = c("V_q5", "W_q5", "Z_q5"),
                              l2_id = "teacher_id",
                              l3_id = "Z_q5",
                              caliper = 4,
@@ -162,7 +159,7 @@ run_sim <- function(iterations,
                          teacher_id = "student_id", 
                          tx_var = "D", 
                          exact_vars = NULL, 
-                         teacher_vars = c("X_ijk", "W_jk"), 
+                         teacher_vars = c("X_ijk", "V_jk", "W_jk"), 
                          site_vars = "Z_k",
                          group = "Z_q5", # changed the name here bc Jordan is using 2 different quintiles
                          crc = 1,
@@ -179,7 +176,7 @@ run_sim <- function(iterations,
                          teacher_id = "teacher_id", 
                          tx_var = "D", 
                          exact_vars = NULL, 
-                         teacher_vars = c("X_jk", "W_jk"), 
+                         teacher_vars = c("X_jk", "V_jk", "W_jk"), 
                          site_vars = "Z_k",
                          group = "Z_q5",
                          crc = 1,
@@ -244,7 +241,7 @@ run_sim <- function(iterations,
     
     
 
-     # outcome models ----------------------------------------------------------
+      # outcome models ----------------------------------------------------------
 
      # something that runs the hlm outcome model and saves estimates etc. 
      # and the balance stats for each method
@@ -259,7 +256,7 @@ run_sim <- function(iterations,
                                                m_7, m_8, m_9,
                                                m_10, m_11, m_12),
                             outcome_formula = c("Y_ijk ~ D + (1 | teacher_id) + (1 | school_id)",
-                                                rep("Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + (1 | teacher_id) + (1 | school_id)", 13)),
+                                                rep("Y_ijk ~ D  + X_ijk + X_jk + V_jk + W_jk + Z_k + (1 | teacher_id) + (1 | school_id)", 13)),
                             method = c("0.1", "0.2", "1", "2", "3", "4", "5", "6",
                                        "7", "8", "9", "10", "11", "12"),
                             n_t_all = sum(cluster_level_dat$D),
