@@ -112,6 +112,7 @@ multi_match <- function(dat, # data
                         teacher_id = integer(),
                         school_id = integer(),
                         Z_k = double(),
+                        V_jk = double(),
                         W_jk = double(),
                         X_ijk = double(),
                         U_ijk = double(),
@@ -122,6 +123,7 @@ multi_match <- function(dat, # data
                         X_jk = double(),
                         W_q5 = factor(levels = 1:5),
                         Z_q5 = factor(levels = 1:5),
+                        V_q5 = factor(levels = 1:5),
                         pair_id = integer(),
                         weights = double())
                         
@@ -449,7 +451,7 @@ match_hybrid <-  function(dat,
 #Check balance Function #
 calc_balance <- function(dat_match, 
                          tx_var = "D", 
-                         vars = c("Z_k", "W_jk", "X_jk", "X_ijk", "U_ijk")){
+                         vars = c("Z_k", "V_jk", "W_jk", "X_jk", "X_ijk", "U_ijk")){
   
   dat_match <- as.data.frame(dat_match)
   
@@ -495,7 +497,7 @@ calc_balance <- function(dat_match,
 
 
 estimate_effect <- function(matched_dat,
-                            outcome_formula = "Y_ijk ~ D  + X_ijk + X_jk + W_jk + Z_k + 
+                            outcome_formula = "Y_ijk ~ D  + X_ijk + X_jk + V_jk + W_jk + Z_k + 
                               (1 | teacher_id) + (1 | school_id)",
                             method,
                             n_t_all,
@@ -505,6 +507,7 @@ estimate_effect <- function(matched_dat,
     
     results <- data.frame(method = method,
                           U_ijk = NA,
+                          V_jk = NA,
                           W_jk = NA,
                           X_ijk = NA,
                           X_jk = NA,
