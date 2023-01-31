@@ -2,8 +2,8 @@ library(tidyverse)
 
 # Load results ------------------------------------------------------------
 
-files <- list.files("results/results", full.names = TRUE)
-files[-1]
+files <- list.files("results/results_take_3", full.names = TRUE)
+
 
 load_res <- function(file) {
 

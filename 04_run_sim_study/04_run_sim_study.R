@@ -282,7 +282,7 @@ run_sim <- function(iterations,
 # include design matrix
 # make sure this is different for each person! :D 
 # use your zip code!
-set.seed(78745) # change this seed value!
+set.seed(78748) # change this seed value!
 
 # now express the simulation parameters as vectors/lists
 
@@ -297,7 +297,7 @@ design_factors <- list(
 params <-
   cross_df(design_factors) %>%
   mutate(
-    iterations = 200, # change this to how many ever iterations
+    iterations = 50, # change this to how many ever iterations
     seed = round(runif(1) * 2^30) + 1:n()
   )
 
@@ -328,5 +328,5 @@ run_date <- date()
 # add your initials 
 # upload results to sharepoint and let megha know
 # megha to upload on github
-save(params, results, session_info, run_date, file = "results/simulation_results_mj_1.Rdata")
+save(params, results, session_info, run_date, file = "results/simulation_results_mj_3.Rdata")
 
