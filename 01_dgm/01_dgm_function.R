@@ -129,20 +129,16 @@ generate_data <- function(k, # schools
   # standardizing Y_0_ijk
   Y_0_ijk <- (Y_0_ijk - mean(Y_0_ijk)) / sd(Y_0_ijk)
   
-  Y_1_ijk <- Y_0_ijk + delta
-  
 
   # Observed outcome --------------------------------------------------------
   dat <- 
     dat %>%
-    mutate(Y_ijk = D * Y_1_ijk + (1 - D) * Y_0_ijk)
-  
-  
-  dat <- 
-    dat %>%
     group_by(teacher_id) %>%
     mutate(X_jk = mean(X_ijk)) %>%
-    ungroup()
+    ungroup() %>%
+    mutate(Y_1_ijk = Y_0_ijk + delta - 0.10 * delta * W_jk - 0.10 * delta * X_jk,
+           Y_ijk = D * Y_1_ijk + (1 - D) * Y_0_ijk) %>%
+    select(-Y_1_ijk)
   
   
   dat$W_q5 <- cut(dat$W_jk, 5,
