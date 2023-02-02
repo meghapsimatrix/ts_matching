@@ -19,7 +19,7 @@ results <- map_dfr(files, load_res)
 
 # clean results  ----------------------------------------------------------
 
-K <- 200 + 400 + 300
+K <- 300 + 400 + 300
 
 # check if seeds are different
 results %>%
