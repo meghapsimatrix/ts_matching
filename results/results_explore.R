@@ -15,11 +15,12 @@ load_res <- function(file) {
 
 results <- map_dfr(files, load_res)
 
+table(results$K)
 
 
 # clean results  ----------------------------------------------------------
 
-K <- 400 + 400 + 300 + 300
+K <- 7 * 100 + 2 * 200 + 2 * 300
 
 # check if seeds are different
 results %>%
