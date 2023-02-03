@@ -19,7 +19,7 @@ results <- map_dfr(files, load_res)
 
 # clean results  ----------------------------------------------------------
 
-K <- 300 + 400 + 300
+K <- 400 + 400 + 300
 
 # check if seeds are different
 results %>%
@@ -38,6 +38,9 @@ results_clean <-
 results_clean %>%
   group_by(method) %>%
   summarize(bias = mean(bias))
+
+
+
 
 results_clean <- 
   results_clean %>%
