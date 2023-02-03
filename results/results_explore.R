@@ -125,7 +125,7 @@ make_plot(dat = results_clean %>% mutate(outcome = bias),
           title = "Bias",
           y_label = "Bias")
 
-ggsave("results/graphs/full_graph_bias.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_bias.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = bias), 
           title = "Bias",
@@ -150,7 +150,7 @@ make_plot(dat = results_clean %>% mutate(outcome = rmse),
           title = "RMSE",
           y_label = "RMSE")
 
-ggsave("results/graphs/full_graph_rmse.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_rmse.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = rmse), 
           title = "RMSE",
@@ -175,7 +175,7 @@ make_plot(dat = results_clean %>% mutate(outcome = prop_t_m),
           y_label = "Proportion of Treated Teachers Matched",
           yint = 1)
 
-ggsave("results/graphs/full_graph_prop_t_m.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_prop_t_m.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = prop_t_m), 
           title = "Proportion of Treated Teachers Matched",
@@ -194,7 +194,7 @@ make_plot(dat = results_clean %>% mutate(outcome = prop_t_stud_m),
           y_label = "Proportion of Treated Students Matched",
           yint = 1)
 
-ggsave("results/graphs/full_graph_prop_t_stud_m.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_prop_t_stud_m.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = prop_t_stud_m), 
           title = "Proportion of Treated Students Matched",
@@ -215,7 +215,7 @@ make_plot(dat = results_clean %>% mutate(outcome = W_jk),
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
 
-ggsave("results/graphs/full_graph_smd_W_jk.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_smd_W_jk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = W_jk), 
           title = "SMD for W_jk",
@@ -235,7 +235,7 @@ make_plot(dat = results_clean %>% mutate(outcome = X_jk),
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
 
-ggsave("results/graphs/full_graph_smd_X_jk.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_smd_X_jk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = X_jk), 
           title = "SMD for X_jk",
@@ -254,7 +254,7 @@ make_plot(dat = results_clean %>% mutate(outcome = X_ijk),
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
 
-ggsave("results/graphs/full_graph_smd_X_ijk.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_smd_X_ijk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = X_ijk), 
           title = "SMD for X_ijk",
@@ -272,7 +272,7 @@ make_plot(dat = results_clean %>% mutate(outcome = Z_k),
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
 
-ggsave("results/graphs/full_graph_smd_Z_k.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_smd_Z_k.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = Z_k), 
           title = "SMD for Z_k",
@@ -291,7 +291,7 @@ make_plot(dat = results_clean %>% mutate(outcome = U_ijk),
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
 
-ggsave("results/graphs/full_graph_smd_U_ijk.png", device = "png", width = 12, height = 8)
+ggsave("results/graphs/full_graph_smd_U_ijk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome =  U_ijk), 
           title = "SMD for  U_ijk",
