@@ -20,7 +20,7 @@ table(results$K)
 
 # clean results  ----------------------------------------------------------
 
-K <- 7 * 100 + 2 * 200 + 2 * 300
+K <- 7 * 100 + 2 * 200 + 3 * 300
 
 # check if seeds are different
 results %>%
@@ -225,6 +225,24 @@ make_plot(dat = zoom_results %>% mutate(outcome = W_jk),
   geom_hline(yintercept = .25, linetype = "dashed") 
 
 ggsave("results/graphs/zoom_graph_smd_W_jk.png", device = "png", width = 12, height = 8)
+
+
+make_plot(dat = results_clean %>% mutate(outcome = V_jk), 
+          title = "SMD for V_jk",
+          y_label = "Standardized Mean Difference",
+          type_line = "solid") +
+  geom_hline(yintercept = .25, linetype = "dashed")
+
+ggsave("results/graphs/full_graph_smd_V_jk.png", device = "png", width = 12, height = 9)
+
+make_plot(dat = zoom_results %>% mutate(outcome = V_jk), 
+          title = "SMD for V_jk",
+          y_label = "Standardized Mean Difference",
+          type_line = "solid",
+          dot_size = 3) +
+  geom_hline(yintercept = .25, linetype = "dashed") 
+
+ggsave("results/graphs/zoom_graph_smd_V_jk.png", device = "png", width = 12, height = 8)
 
 
 
