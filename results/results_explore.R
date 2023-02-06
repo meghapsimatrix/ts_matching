@@ -41,6 +41,23 @@ results_clean %>%
   group_by(method) %>%
   summarize(bias = mean(bias))
 
+results_all <- 
+  results_clean %>%
+  mutate(method = as.character(method)) %>%
+  mutate(method = factor(method, levels = c("0.1", "0.2", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"))) %>%
+  mutate(k_j = paste0("# Schools = ", k, ", ", "# Teachers = ", j),
+         icc = paste0("icc3 = ", icc3, ", ", "icc2  = ", icc2)) %>%
+  mutate(matching_priority = fct_collapse(method,
+                                          "No Distinction" = c("1", "2", "3"),
+                                          "Within-site Matching" = c("4", "5", "6"),
+                                          "Within-group Matching" = c("7", "8", "9"),
+                                          "Within-site then -group Matching" = c("10", "11", "12")),
+         matching_level = fct_collapse(method,
+                                       "Units only" = c("1", "4", "7", "10"),
+                                       "Clusters only" = c("2", "5", "8", "11"),
+                                       "Units & Clusters" = c("3", "6", "9", "12"))) 
+
+save(results_all, file = "results/results/results_all.RData")
 
 
 
