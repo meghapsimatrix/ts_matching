@@ -21,6 +21,7 @@ table(results$K)
 # clean results  ----------------------------------------------------------
 
 K <- 7 * 100 + 2 * 200 + 3 * 300
+K
 
 # check if seeds are different
 results %>%
