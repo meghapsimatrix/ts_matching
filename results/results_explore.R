@@ -69,14 +69,14 @@ results_clean <-
   mutate(k_j = paste0("# Schools = ", k, ", ", "# Teachers = ", j),
          icc = paste0("icc3 = ", icc3, ", ", "icc2  = ", icc2)) %>%
   mutate(matching_priority = fct_collapse(method,
-                                          "No Distinction" = c("1", "2", "3"),
-                                          "Within-site Matching" = c("4", "5", "6"),
-                                          "Within-group Matching" = c("7", "8", "9"),
-                                          "Within-site then -group Matching" = c("10", "11", "12")),
+                                          "No distinction" = c("1", "2", "3"),
+                                          "Within-site" = c("4", "5", "6"),
+                                          "Within-group" = c("7", "8", "9"),
+                                          "Within-site then -group" = c("10", "11", "12")),
          matching_level = fct_collapse(method,
                                        "Units only" = c("1", "4", "7", "10"),
                                        "Clusters only" = c("2", "5", "8", "11"),
-                                       "Units & Clusters" = c("3", "6", "9", "12"))) 
+                                       "matchMulti" = c("3", "6", "9", "12"))) 
 
 
 save(results_clean, file = "results/results/results_clean.RData")
@@ -93,25 +93,26 @@ make_plot <- function(dat,
                       y_label, 
                       yint = 0,
                       type_line = "dashed",
-                      dot_size = 2,
+                      dot_size = 2.5,
                       text = "large"){
   
   p <- ggplot(dat, aes(x = method, 
                   y = outcome, 
-                  shape = matching_level, 
-                  color = matching_priority)) + 
+                  shape = matching_priority, 
+                  color = matching_level )) + 
     geom_point(size = dot_size) +
     annotate("rect",
              xmin = 0, xmax = 3.5,
              ymin = -Inf, ymax = Inf,
-             fill = "blue", alpha = .2) +
+             fill = "blue", alpha = .1) +
     annotate("rect",
              xmin = 6.5, xmax = 9.5,
              ymin = -Inf, ymax = Inf,
-             fill = "blue", alpha = .2) +
+             fill = "blue", alpha = .1) +
     facet_grid(icc ~ k_j) +
     geom_hline(yintercept = yint, linetype = type_line) +
-    scale_color_brewer(palette = "Dark2") +
+    scale_shape_manual(values = c(16, 15, 17, 4)) +
+    scale_color_manual(values = c("#063C5C", "#F9A871", "#AEDBC0")) +
     theme_bw() +
     ggtitle(title) +
     labs(shape = "", color = "", x = "Method", y = y_label) +
