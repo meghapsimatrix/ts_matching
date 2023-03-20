@@ -339,5 +339,23 @@ make_plot(dat = zoom_results %>% mutate(outcome =  U_ijk),
 
 ggsave("results/graphs/zoom_graph_smd_U_ijk.png", device = "png", width = 12, height = 8)
 
+ggplot(results_clean, aes(x = X_ijk, 
+                          y = bias,
+                          shape = matching_priority, 
+                          color = matching_level)) + 
+  geom_point() +
+  facet_grid(icc ~ k_j) +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_shape_manual(values = c(16, 15, 17, 4)) +
+  scale_color_manual(values = c("#063C5C", "#F9A871", "#AEDBC0")) +
+  theme_bw() +
+  labs(shape = "", color = "", x = "X_ijk", y = "Bias") +
+  theme(legend.position = "bottom")
+
+
+
+
+
+ggsave("results/graphs/bias_smd.png", device = "png", width = 12, height = 9)
 
 
