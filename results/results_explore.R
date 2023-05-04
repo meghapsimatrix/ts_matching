@@ -229,7 +229,7 @@ ggsave("results/graphs/zoom_graph_prop_t_stud_m.png", device = "png", width = 12
 
 
 make_plot(dat = results_clean %>% mutate(outcome = W_jk), 
-          title = "SMD for W_jk",
+          title = expression(paste("SMD for ", W[jk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
@@ -237,7 +237,7 @@ make_plot(dat = results_clean %>% mutate(outcome = W_jk),
 ggsave("results/graphs/full_graph_smd_W_jk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = W_jk), 
-          title = "SMD for W_jk",
+          title = expression(paste("SMD for ", W[jk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
@@ -247,7 +247,7 @@ ggsave("results/graphs/zoom_graph_smd_W_jk.png", device = "png", width = 12, hei
 
 
 make_plot(dat = results_clean %>% mutate(outcome = V_jk), 
-          title = "SMD for V_jk",
+          title = expression(paste("SMD for ", V[jk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
@@ -255,7 +255,7 @@ make_plot(dat = results_clean %>% mutate(outcome = V_jk),
 ggsave("results/graphs/full_graph_smd_V_jk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = V_jk), 
-          title = "SMD for V_jk",
+          title = expression(paste("SMD for ", V[jk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
@@ -267,7 +267,7 @@ ggsave("results/graphs/zoom_graph_smd_V_jk.png", device = "png", width = 12, hei
 
 
 make_plot(dat = results_clean %>% mutate(outcome = X_jk), 
-          title = "SMD for X_jk",
+          title = expression(paste("SMD for ", X[jk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
@@ -275,7 +275,7 @@ make_plot(dat = results_clean %>% mutate(outcome = X_jk),
 ggsave("results/graphs/full_graph_smd_X_jk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = X_jk), 
-          title = "SMD for X_jk",
+          title = expression(paste("SMD for ", X[jk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
@@ -286,7 +286,7 @@ ggsave("results/graphs/zoom_graph_smd_X_jk.png", device = "png", width = 12, hei
 
 
 make_plot(dat = results_clean %>% mutate(outcome = X_ijk), 
-          title = "SMD for X_ijk",
+          title = expression(paste("SMD for ", X[ijk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
@@ -294,7 +294,7 @@ make_plot(dat = results_clean %>% mutate(outcome = X_ijk),
 ggsave("results/graphs/full_graph_smd_X_ijk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = X_ijk), 
-          title = "SMD for X_ijk",
+          title = expression(paste("SMD for ", X[ijk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
@@ -304,7 +304,7 @@ ggsave("results/graphs/zoom_graph_smd_X_ijk.png", device = "png", width = 12, he
 
 
 make_plot(dat = results_clean %>% mutate(outcome = Z_k), 
-          title = "SMD for Z_k",
+          title = expression(paste("SMD for ", Z[k])),
           y_label = "Standardized Mean Difference",
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
@@ -312,7 +312,7 @@ make_plot(dat = results_clean %>% mutate(outcome = Z_k),
 ggsave("results/graphs/full_graph_smd_Z_k.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome = Z_k), 
-          title = "SMD for Z_k",
+          title = expression(paste("SMD for ", Z[k])),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
@@ -323,7 +323,7 @@ ggsave("results/graphs/zoom_graph_smd_Z_k.png", device = "png", width = 12, heig
 
 
 make_plot(dat = results_clean %>% mutate(outcome = U_ijk), 
-          title = "SMD for U_ijk",
+          title = expression(paste("SMD for ", U[ijk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid") +
   geom_hline(yintercept = .25, linetype = "dashed")
@@ -331,7 +331,7 @@ make_plot(dat = results_clean %>% mutate(outcome = U_ijk),
 ggsave("results/graphs/full_graph_smd_U_ijk.png", device = "png", width = 12, height = 9)
 
 make_plot(dat = zoom_results %>% mutate(outcome =  U_ijk), 
-          title = "SMD for  U_ijk",
+          title = expression(paste("SMD for ", U[ijk])),
           y_label = "Standardized Mean Difference",
           type_line = "solid",
           dot_size = 3) +
@@ -349,7 +349,7 @@ ggplot(results_clean, aes(x = X_ijk,
   scale_shape_manual(values = c(16, 15, 17, 4)) +
   scale_color_manual(values = c("#063C5C", "#F9A871", "#AEDBC0")) +
   theme_bw() +
-  labs(shape = "", color = "", x = "X_ijk", y = "Bias") +
+  labs(shape = "", color = "", x = expression(paste("SMD for ", X[ijk])), y = "Bias") +
   theme(legend.position = "bottom")
 
 
