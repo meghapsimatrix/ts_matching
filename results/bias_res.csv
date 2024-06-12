@@ -1,4 +1,5 @@
-method,"k = 20, j = 4 bias","k = 20, j = 8 bias","k = 50, j = 4 bias","k = 50, j = 8 bias"
+,# of schools = 20,,# of schools = 50,
+Method,# of teachrs = 4,# teachers = 8,# of teachrs = 4,# of teachrs = 8
 1,0.248,-0.002,0.208,0.25
 2,0.278,0.018,0.121,0.151
 3,0.241,-0.113,0.121,0.245
