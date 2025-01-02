@@ -76,7 +76,7 @@ results_clean <-
          matching_level = fct_collapse(method,
                                        "Units only" = c("1", "4", "7", "10"),
                                        "Clusters only" = c("2", "5", "8", "11"),
-                                       "matchMulti" = c("3", "6", "9", "12"))) 
+                                       "TLCD" = c("3", "6", "9", "12"))) 
 
 
 save(results_clean, file = "results/results/results_clean.RData")
@@ -114,7 +114,7 @@ make_plot <- function(dat,
     scale_shape_manual(values = c(16, 15, 17, 4)) +
     scale_color_manual(values = c("#063C5C", "#F9A871", "#AEDBC0")) +
     theme_bw() +
-    ggtitle(title) +
+    #ggtitle(title) +
     labs(shape = "", color = "", x = "Method", y = y_label) +
     theme(legend.position = "bottom")
   
